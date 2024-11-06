@@ -36,7 +36,7 @@ Create a .env file in the backend directory with the following variables:
 ```bash
 cd backend
 
-MONGODB_URI="your_mongodb_connection_string"
+MONGODB_URI="mongodb+srv://<your-username>:<your-password>@cluster0.mongodb.net/mydatabase?retryWrites=true&w=majority"
 MONGODB_DB_NAME="PPDS"
 REACT_APP_API_BASE_URL="http://localhost:8000"
 ```
