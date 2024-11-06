@@ -8,5 +8,10 @@ pydantic # For data validation and type checking
 python-dotenv # To load environment variables from .env file
 
 # for engage scraping
-requests
-beautifulsoup4
+requests # For making HTTP requests
+beautifulsoup4 # For parsing HTML content
+
+# Additional dependencies for web scraping and data handling
+selenium # For browser automation in scraping
+pandas # For data manipulation and saving as CSV (if needed)
+pymongo # MongoDB driver, used in scraping for direct database operations
