@@ -1,0 +1,8 @@
+# Python Dependencies:
+# This file lists the necessary Python libraries for FastAPI and MongoDB integration.
+
+fastapi # Framework for building APIs
+uvicorn # Server to run FastAPI
+motor # Async MongoDB driver for FastAPI
+pydantic # For data validation and type checking
+python-dotenv # To load environment variables from .env file

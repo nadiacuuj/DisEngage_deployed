@@ -1,0 +1,52 @@
+# *.pyc 
+# __pycache__/
+# .venv/
+# .env
+# .vscode/
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Node.js dependencies (React)
+node_modules/       # Installed packages; generated from package.json
+.pnp
+.pnp.js
+
+# Python cache and virtual environment (FastAPI)
+__pycache__/        # Python bytecode cache
+env/                # Local virtual environment; can be recreated from requirements.txt
+*.pyc
+backend/.venv       # Ignore .venv folder in backend specifically
+
+# Environment files (contain sensitive info)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*      # Logs for npm errors
+yarn-debug.log*     # Logs for yarn errors
+yarn-error.log*
+pip-log.txt         # Logs for pip
+
+# Testing coverage reports
+coverage/
+
+# Build output (generated files)
+build/              # Production build for React
+dist/               # Distribution folder for other build outputs
+
+# macOS system files
+.DS_Store           # macOS-specific metadata file
+
+# Temporary and editor-specific files
+*.swp               # Vim swap files
+*.swo
+*.bak               # Backup files
+*.tmp               # Temp files
+
+# Additional macOS system files
+._*                 # Resource fork files
+.Trashes
+.Spotlight-V100
