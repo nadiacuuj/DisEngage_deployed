@@ -32,11 +32,10 @@ cd frontend_setup
 
 ### 2. Configure Environment Variables
 
-```bash
-cd backend
-```
 Create a .env file in the backend directory with the following variables:
 ```bash
+cd backend
+
 MONGODB_URI="your_mongodb_connection_string"
 MONGODB_DB_NAME="PPDS"
 REACT_APP_API_BASE_URL="http://localhost:8000"
@@ -46,7 +45,6 @@ REACT_APP_API_BASE_URL="http://localhost:8000"
 
 Navigate to the backend directory, create a virtual environment, install dependencies, and activate it:
 ```bash
-cd backend
 python -m venv .venv
 
 .venv\Scripts\activate # On Windows use .venv\Scripts\activate
