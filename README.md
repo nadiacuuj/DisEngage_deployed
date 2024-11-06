@@ -32,6 +32,9 @@ cd frontend_setup
 
 ### 2. Configure Environment Variables
 
+```bash
+cd backend
+```
 Create a .env file in the backend directory with the following variables:
 ```bash
 MONGODB_URI="your_mongodb_connection_string"
@@ -46,10 +49,8 @@ Navigate to the backend directory, create a virtual environment, install depende
 cd backend
 python -m venv .venv
 
-# On Windows use .venv\Scripts\activate
-source .venv/bin/activate
-# On macOS and Linux:
-source .venv/bin/activate
+.venv\Scripts\activate # On Windows use .venv\Scripts\activate
+source .venv/bin/activate # On macOS and Linux:
 ```
 
 ### 4. Run the Backend Server
