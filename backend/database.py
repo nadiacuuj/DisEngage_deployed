@@ -9,11 +9,14 @@ from dotenv import load_dotenv # To load environment variables from .env
 # Load variables from .env file
 load_dotenv()
 
-# MongoDB URI and database name from .env file
+# Load environment variables from the .env file
+load_dotenv()
+
+# Retrieve MongoDB URI and database name from environment variables
 MONGODB_URI = os.getenv("MONGODB_URI")
 DB_NAME = os.getenv("MONGODB_DB_NAME")
 
-# Create MongoDB client and access the database
+# Initialize MongoDB client and connect to the specified database
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
-database = client[DB_NAME] # Access the specified database
-events_collection = database.get_collection("event") # Collection within the database
+database = client[DB_NAME]  # Access the 'PPDS' database
+events_collection = database.get_collection("event")  # Collection for 'event' data within the database
