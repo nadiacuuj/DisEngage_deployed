@@ -2,7 +2,7 @@
 // This component is the main page after logging in, with buttons to navigate to other parts of the app.
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Note from AI: useNavigate replaces useHistory in React Router v6
+import { useNavigate } from 'react-router-dom'; // useNavigate replaces useHistory in React Router v6
 
 const LandingPage = () => {
   const navigate = useNavigate(); // useNavigate is a React hook to handle navigation (when each button is clicked)
