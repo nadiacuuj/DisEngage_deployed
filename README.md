@@ -27,24 +27,24 @@ Follow these steps to set up the frontend and backend locally, enabling you to e
 
 ```bash
 git clone <repository-url>
-cd NYU_Events_FrontEnd_Setup/frontend
+cd NYU_Events_FrontEnd_Setup
 ```
 
 ### 2. Configure Environment Variables
 
 Create a .env file in the backend directory with the following variables:
 ```bash
-cd backend
-
 MONGODB_URI="mongodb+srv://<your-username>:<your-password>@cluster0.mongodb.net/mydatabase?retryWrites=true&w=majority"
 MONGODB_DB_NAME="PPDS"
 REACT_APP_API_BASE_URL="http://localhost:8000"
 ```
+Make the .env in the root directory (along frontend and backend files)
 
 ### 3. Backend Setup
 
 Navigate to the backend directory, create a virtual environment, install dependencies, and activate it:
 ```bash
+cd backend
 python -m venv .venv
 
 .venv\Scripts\activate # On Windows use .venv\Scripts\activate
