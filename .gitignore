@@ -8,7 +8,7 @@
 
 # Node.js dependencies (React)
 node_modules/       # Installed packages; generated from package.json
-/node_modules
+/frontend/node_modules/
 .pnp
 .pnp.js
 
