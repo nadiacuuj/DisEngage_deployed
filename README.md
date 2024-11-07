@@ -27,7 +27,7 @@ Follow these steps to set up the frontend and backend locally, enabling you to e
 
 ```bash
 git clone <repository-url>
-cd frontend_setup
+cd NYU_Events_FrontEnd_Setup/frontend
 ```
 
 ### 2. Configure Environment Variables
