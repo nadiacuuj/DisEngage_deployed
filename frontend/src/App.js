@@ -10,6 +10,7 @@ import CategoryPage from './components/CategoryPage';
 import CartPage from './components/CartPage';
 import ScheduleReview from './components/ScheduleReview';
 import Oauth from './components/Oauth';
+import DummyCategory from './components/CategoryPageDummy';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Login />} /> {/* Default route loads the Login component */}
           <Route path="/landing" element={<LandingPage />} /> {/* Route to the main landing page */}
           <Route path="/categories" element={<CategoryPage />} /> {/* Route to category search page */}
+          <Route path="/dummy_category" element={<DummyCategory />} />
           <Route path="/cart" element={<CartPage />} /> {/* Route to cart page */}
           <Route path="/schedule-review" element={<ScheduleReview />} /> {/* Route to schedule review page */}
           <Route path="/oauth" element={<Oauth />} /> {/* Route to OAuth page */}
