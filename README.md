@@ -42,13 +42,14 @@ Make the .env in the root directory (along frontend and backend files)
 
 ### 3. Backend Setup
 
-Navigate to the backend directory, create a virtual environment, install dependencies, and activate it:
+create a virtual environment in the root directory, install dependencies, and activate it:
 ```bash
-cd backend
 python -m venv .venv
 
 .venv\Scripts\activate # On Windows use .venv\Scripts\activate
 source .venv/bin/activate # On macOS and Linux:
+
+pip install -r requirements.txt
 ```
 
 ### 4. Run the Backend Server
