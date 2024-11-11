@@ -4,61 +4,49 @@
 # 2) An API route to scrape events from the Engage website and store them in MongoDB.
 
 from fastapi import FastAPI  # FastAPI for building the API
+from pymongo import MongoClient
 from typing import List  # Type hint for list responses
 from pydantic import BaseModel  # Base model for data validation
-from database import events_collection  # MongoDB collection from database.py
-from scrape import scrape_events  # Import the scraping function from scrape.py
+# from routes import router  # MongoDB collection from database.py
+from scrape import insert_events_to_mongo
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from contextlib import asynccontextmanager
+from dotenv import load_dotenv # To load environment variables from .env
+from urllib.parse import quote_plus
+from datetime import datetime
+import os
+import certifi
 
-# Initialize FastAPI application
-app = FastAPI()
+load_dotenv()
 
-# Test root endpoint
-@app.get("/")
-async def root():
-    return {"message": "Hello, world!"}  # Simple message to verify server is running
+# Get MongoDB credentials
+MONGODB_URI = os.getenv('MONGODB_URI')
+DB_NAME = os.getenv('MONGODB_DB_NAME')
 
-# Define an Event model with fields matching MongoDB structure
-class Event(BaseModel):
-    name: str  # Event name
-    description: str  # Event description
-    category: str  # Event category
-    venue: str  # Event venue
-    startTime: str  # Start time in ISO string format
-    endTime: str  # End time in ISO string format
-    createdAt: str  # Event creation time in ISO string format
-    source: str  # Source of the event
-    responseStatus: str = None  # Optional field for response status
+# Initialize FastAPI application with lifespan management
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Set up MongoDB client and database
+    app.mongodb_client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
+    app.database = app.mongodb_client[DB_NAME]
+    print("Connected to MongoDB!")
 
-    class Config:
-        orm_mode = True  # Enable compatibility with MongoDB
 
-# Route to get all events in the 'event' collection
-@app.get("/events", response_model=List[Event])
-async def get_events():
-    """
-    Fetch all events stored in the MongoDB collection.
-    """
-    events = []  # Store retrieved events here
-    async for event in events_collection.find():  # Iterate over all events in collection
-        event["_id"] = str(event["_id"])  # Convert MongoDB ObjectId to string
-        events.append(Event(**event))  # Convert MongoDB document to Event model
-    return events  # Return list of events
+    # Set up the scheduler and start the daily job
+    scheduler = AsyncIOScheduler(timezone="America/New_York")
+    scheduler.add_job(insert_events_to_mongo, "interval", days=1, next_run_time=datetime.now())
+    scheduler.start()
+    print("Scheduler started with a daily scraping job.")
 
-# Route to scrape new events and store them in MongoDB
-@app.post("/scrape-events")
-async def scrape_and_store_events():
-    """
-    Scrape events from the website and store them in MongoDB.
-    Clears existing events to avoid duplicates.
-    """
-    # Clear the current events in the collection to avoid duplicates
-    await events_collection.delete_many({})
-    
-    # Scrape new events from the website
-    scraped_events = scrape_events()  # Call the scrape_events function from scrape.py
-    
-    # Insert each scraped event into the MongoDB collection
-    for event in scraped_events:
-        await events_collection.insert_one(event)
-    
-    return {"message": "Events scraped and stored successfully", "event_count": len(scraped_events)}
+    # Yield control back to FastAPI for the application lifecycle
+    yield
+
+    # Shutdown resources upon application shutdown
+    scheduler.shutdown()
+    app.mongodb_client.close()
+    print("Disconnected from MongoDB and stopped the scheduler.")
+
+app = FastAPI(lifespan=lifespan)  # Pass the lifespan context to FastAPI
+
+# Include the API router
+# app.include_router(router, prefix="/api", tags=["api"])

@@ -34,8 +34,8 @@ cd NYU_Events_FrontEnd_Setup
 
 Create a .env file in the backend directory with the following variables:
 ```bash
-MONGODB_URI="mongodb+srv://<your-username>:<your-password>@cluster0.mongodb.net/mydatabase?retryWrites=true&w=majority"
-MONGODB_DB_NAME="PPDS"
+MONGODB_URI=mongodb+srv://<username>:<password>@projects-in-programming.qctmw.mongodb.net/?retryWrites=true&w=majority&appName=Projects-In-Programming
+MONGODB_DB_NAME="ProjectDB"
 REACT_APP_API_BASE_URL="http://localhost:8000"
 ```
 Make the .env in the root directory (along frontend and backend files)
