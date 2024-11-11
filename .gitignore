@@ -13,7 +13,7 @@ node_modules/       # Installed packages; generated from package.json
 .pnp.js
 
 # Python cache and virtual environment (FastAPI)
-__pycache__/        # Python bytecode cache
+**/__pycache__/        # Python bytecode cache
 env/                # Local virtual environment; can be recreated from requirements.txt
 *.pyc
 backend/.venv       # Ignore .venv folder in backend specifically
