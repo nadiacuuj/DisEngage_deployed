@@ -56,6 +56,7 @@ async def insert_events_to_mongo():
             return False
 
     # Load additional events by clicking the "Load more" button
+    # make count -= 1 to capture all events!
     while count > 0:
         load_more()
         count -= 10

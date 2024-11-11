@@ -32,13 +32,13 @@ cd NYU_Events_FrontEnd_Setup
 
 ### 2. Configure Environment Variables
 
-Create a .env file in the backend directory with the following variables:
+Create a .env file in the root directory with the following variables:
 ```bash
 MONGODB_URI=mongodb+srv://<username>:<password>@projects-in-programming.qctmw.mongodb.net/?retryWrites=true&w=majority&appName=Projects-In-Programming
 MONGODB_DB_NAME="ProjectDB"
 REACT_APP_API_BASE_URL="http://localhost:8000"
 ```
-Make the .env in the root directory (along frontend and backend files)
+
 
 ### 3. Backend Setup
 
@@ -66,5 +66,17 @@ Open a new terminal, navigate to the frontend directory, install dependencies, a
 cd ../frontend
 npm install
 npm start
+```
+
+## Scraping
+In the scrape.py file, adjust the X in count -= X to scrape a portion or all events.
+
+```python
+
+#make count -= 1 to capture all events!
+    while count > 0:
+        load_more()
+        count -= 10
+        time.sleep(0.5)
 ```
 
