@@ -42,8 +42,8 @@ function CategorySelect(){
                     displayValue={(person) => person?.name}
                     onChange={(event) => setQuery(event.target.value)}
                   />
-                  <ComboboxButton className="group absolute inset-y-0 right-0 px-2.5">
-                    <ChevronDownIcon className="size-4 fill-white/60 group-data-[hover]:fill-white justify-center" />
+                  <ComboboxButton className="absolute inset-y-0 right-2 flex items-center">
+                    <ChevronDownIcon className="w-4 h-4 size-4 fill-white/60 group-data-[hover]:fill-white justify-top" />
                   </ComboboxButton>
                 </div>
         
