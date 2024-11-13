@@ -9,9 +9,10 @@ import LandingPage from './components/LandingPage';
 import CategoryPage from './components/CategoryPage';
 import CartPage from './components/CartPage';
 import ScheduleReview from './components/ScheduleReview';
-import Oauth from './components/Oauth';
+import Oauth from './components/OAuth2Callback';
 import DummyCategory from './components/CategoryPageDummy';
 import OrganizationListPage from './components/OrganizationList';
+import OAuth2Callback from './components/OAuth2Callback';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/OrganizationList" element={< OrganizationListPage/>} />
           <Route path="/cart" element={<CartPage />} /> {/* Route to cart page */}
           <Route path="/schedule-review" element={<ScheduleReview />} /> {/* Route to schedule review page */}
-          <Route path="/oauth" element={<Oauth />} /> {/* Route to OAuth page */}
+          <Route path="/callback" element={<OAuth2Callback />} /> {/* Route to OAuth page */}
         </Routes>
       </div>
     </Router>

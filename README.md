@@ -34,11 +34,40 @@ cd NYU_Events_FrontEnd_Setup
 
 Create a .env file in the root directory with the following variables:
 ```bash
+# backend variables
 MONGODB_URI=mongodb+srv://<username>:<password>@projects-in-programming.qctmw.mongodb.net/?retryWrites=true&w=majority&appName=Projects-In-Programming
-MONGODB_DB_NAME="ProjectDB"
-REACT_APP_API_BASE_URL="http://localhost:8000"
+MONGODB_DB_NAME=ProjectDB
+REACT_APP_API_BASE_URL=http://localhost:8000
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_REDIRECT_URI=http://localhost:3000/callback
+
+# frontend variables
+REACT_APP_GOOGLE_CLIENT_ID=
+REACT_APP_REDIRECT_URI=http://localhost:3000/callback
 ```
 
+### Obtaining Google Client ID and Google Client Secret
+
+To integrate Google OAuth into your application, follow these steps to obtain your Google Client ID and Google Client Secret:
+
+1. **Go to the Google Cloud Console**: Visit [Google Cloud Console](https://console.cloud.google.com/).
+
+2. **Create a New Project**
+
+3. **Create Credentials**:
+
+   - Go to "APIs & Services" > "Credentials."
+
+   - Click on "Create Credentials" and select "OAuth client ID."
+
+   - If prompted, configure the consent screen by providing the necessary information.
+
+   - Choose "Web application" as the application type.
+
+   - Add your authorized redirect URIs (e.g., `http://localhost:3000/callback`).
+
+4. **Get Your Client ID and Client Secret**
 
 ### 3. Backend Setup
 
@@ -49,7 +78,7 @@ python -m venv .venv
 .venv\Scripts\activate # On Windows use .venv\Scripts\activate
 source .venv/bin/activate # On macOS and Linux:
 
-pip install -r requirements.txt
+pip install -r backend/requirements.txt
 ```
 
 ### 4. Run the Backend Server
@@ -57,6 +86,10 @@ Start the FastAPI server to serve the API on http://localhost:8000:
 
 ```bash
 uvicorn main:app --reload
+```
+or
+```
+python3 -m uvicorn main:app --reload
 ```
 
 ### 5. Frontend Setup

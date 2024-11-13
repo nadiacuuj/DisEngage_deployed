@@ -7,7 +7,7 @@ from fastapi import FastAPI  # FastAPI for building the API
 from pymongo import MongoClient
 from typing import List  # Type hint for list responses
 from pydantic import BaseModel  # Base model for data validation
-# from routes import router  # MongoDB collection from database.py
+from routes import router  # MongoDB collection from database.py
 from scrape import insert_events_to_mongo
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from contextlib import asynccontextmanager
@@ -16,6 +16,7 @@ from urllib.parse import quote_plus
 from datetime import datetime
 import os
 import certifi
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -46,7 +47,15 @@ async def lifespan(app: FastAPI):
     app.mongodb_client.close()
     print("Disconnected from MongoDB and stopped the scheduler.")
 
-app = FastAPI(lifespan=lifespan)  # Pass the lifespan context to FastAPI
-
+#app = FastAPI(lifespan=lifespan)  # Pass the lifespan context to FastAPI
+app = FastAPI()
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Your React app URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Include the API router
-# app.include_router(router, prefix="/api", tags=["api"])
+app.include_router(router, prefix="/api", tags=["api"])
