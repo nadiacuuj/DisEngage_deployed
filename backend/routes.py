@@ -5,10 +5,13 @@
 import motor.motor_asyncio # MongoDB async driver
 import os # For accessing environment variables
 from dotenv import load_dotenv # To load environment variables from .env
-from fastapi import APIRouter, HTTPException, Body, Request, Response, HTTPException, status
+from fastapi import APIRouter, HTTPException, Body, Request, Response, HTTPException, Depends
 from models import Event, EventUpdate
 from typing import List
-
+from jose import jwt
+import requests
+from pydantic import BaseModel
+from fastapi.security import OAuth2PasswordBearer
 
 # Load variables from .env file
 load_dotenv()
@@ -60,3 +63,44 @@ async def root():
 #         await events_collection.insert_one(event)
     
 #     return {"message": "Events scraped and stored successfully", "event_count": len(scraped_events)}
+class GoogleAuthRequest(BaseModel):
+    code: str
+
+# Add these environment variables
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+GOOGLE_REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+@router.get("/login/google")
+async def login_google():
+    return {
+        "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
+    }
+
+@router.post("/auth/google")
+async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to validate request body
+    print("Received request:", request)  # Debug log
+    
+    token_url = "https://accounts.google.com/o/oauth2/token"
+    data = {
+        "code": request.code,  # Access code from request body
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "redirect_uri": "http://localhost:3000/callback",
+        "grant_type": "authorization_code",
+    }
+    print("Token request data:", data)  # Debug log
+    
+    response = requests.post(token_url, data=data)
+    access_token = response.json().get("access_token")
+    user_info = requests.get(
+        "https://www.googleapis.com/oauth2/v1/userinfo",
+        headers={"Authorization": f"Bearer {access_token}"}
+    )
+    return user_info.json()
+
+@router.get("/token")
+async def get_token(token: str = Depends(oauth2_scheme)):
+    return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
