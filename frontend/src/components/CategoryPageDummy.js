@@ -4,7 +4,7 @@ import Navigationbar from "../component/NavigationBar";
 
 let event1 = {
     ImageSrc:"https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg",
-    EventTitle: "PMC women in Product Management",
+    EventTitle: "PMC women in Product Management and a bit longer",
     EventLocation: "Kimmel Center",
     EventTime: "Monday 12:30 PM - 5:00 PM"
 }
@@ -19,14 +19,12 @@ const DummyCategory = () => {
     <div>
         <Navigationbar />
     <div class="flex w-screen mt-5">
-        <div class="w-1/3 mx-8 pl-8" >
+        <div class="mx-8 pl-8" >
             <CategorySelect/>
         </div>
 
-        <div class="w-2/3 mr-8">
-            <div class="grid grid-cols-3 gap-x-6 gap-y-6 place-items-start">
+        <div class="w-3/4 mr-8 flex flex-wrap gap-y-6 gap-x-4 justify-center">
                 {event_rows}
-            </div>
         </div>
     </div>
     

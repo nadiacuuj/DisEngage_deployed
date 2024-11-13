@@ -21,7 +21,7 @@ const data = [
 
 let event1 = {
     ImageSrc:"https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg",
-    EventTitle: "PMC women in Product Management",
+    EventTitle: "PMC women in Product Management and a big longer?",
     EventLocation: "Kimmel Center",
     EventTime: "Monday 12:30 PM - 5:00 PM"
 };
@@ -50,7 +50,7 @@ function OrganizationPage ({organization}) {
             </div>
         </div>
         <h3 class="text-lg flex-wrap font-semibold max-w-2xl py-5">Upcoming events (view simillar events)</h3>
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-4 gap-x-6">
             <EventCard event = {event1}/>
             <EventCard event = {event1}/>
             <EventCard event = {event1}/>
