@@ -17,3 +17,8 @@ pandas # For data manipulation and saving as CSV (if needed)
 pymongo # MongoDB driver, used in scraping for direct database operations
 
 APScheduler #schedule scraping within 1 day intervals
+
+# OAuth2.0
+google-auth # For Google OAuth2.0 authentication
+google-auth-oauthlib # For OAuth2.0 flow with Google
+python-jose

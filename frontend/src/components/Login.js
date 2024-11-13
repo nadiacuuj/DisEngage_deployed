@@ -9,20 +9,19 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom'; // useNavigate replaces useHistory in React Router v6
 
 const Login = () => {
-  
-  // AI suggested: Use useNavigate to simulate a successful login by navigating to the landing page when the button is clicked.  
-  const navigate = useNavigate(); // useNavigate hook to control navigation
+  const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+  const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
 
-  // Temporary function to simulate login
-  const handleLogin = () => {
-    // Redirect to the landing page
-    navigate('/landing');
+  const handleGoogleLogin = () => {
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid email profile&access_type=offline&prompt=consent`;
+
+    window.location.href = googleAuthUrl;
   };
 
   return (
     <div className="page">
       <h1>Welcome to Evently</h1>
-      <button className="oauth-button" onClick={handleLogin}>
+      <button className="oauth-button" onClick={handleGoogleLogin}>
         Log in with Google
       </button> {/* This button now simulates OAuth login */}
       <p className="placeholder-note">
