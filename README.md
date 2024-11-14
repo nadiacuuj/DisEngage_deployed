@@ -19,7 +19,8 @@
 
 ### Wireframe Overview
 
-The DisEngage wireframe, designed in Figma, outlines all major pages and features:
+
+The DisEngage UI wireframe, designed in Figma, outlines key pages and flows:
 - **Login**: Simple page for Google OAuth (future integration).
 - **Landing Page**: Welcome page with access to event categories.
 - **Category Page**: Displays events sorted by category, allowing users to explore various event types.
