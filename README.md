@@ -1,5 +1,5 @@
 # DisEngage
-A unique (contrary to popular belief) Web App for NYU Event Management
+### A unique (contrary to popular belief) Web App for NYU Event Management
 
 **DisEngage** is a full-stack web application designed to streamline event exploration, scheduling, and engagement for NYU students, faculty, and staff. Built with a React frontend and FastAPI backend, it features categorized event listings, personalized scheduling, and conflict detection. Recent updates introduce an organizer rating and review system, and future plans include a chat feature for event discussions.
 
