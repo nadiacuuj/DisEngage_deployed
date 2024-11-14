@@ -1,6 +1,6 @@
-# Evently - An NYU Event Management Web App
+# DisEngage - A unique (contrary to popular belief) NYU Event Management Web App
 
-**Evently** aims to (hopefully) be a web application that will streamline event exploration and scheduling for NYU students, faculty, and staff. The frontend, developed in React, displays categorized event listings, manages a personalized event cart, and features a schedule review tool to avoid overlap. 
+**DisEngage** aims to (hopefully) be a web application that will streamline event exploration and scheduling for NYU students, faculty, and staff. The frontend, developed in React, displays categorized event listings, manages a personalized event cart, and features a schedule review tool to avoid overlap. 
 
 ### Wireframe Overview
 
@@ -27,7 +27,7 @@ Follow these steps to set up the frontend and backend locally, enabling you to e
 
 ```bash
 git clone <repository-url>
-cd NYU_Events_FrontEnd_Setup
+cd NYU_DisEngage_FullStack
 ```
 
 ### 2. Configure Environment Variables
