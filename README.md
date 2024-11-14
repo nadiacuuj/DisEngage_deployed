@@ -4,14 +4,14 @@
 
 ### Wireframe Overview
 
-The Evently UI wireframe, designed in Figma, outlines key pages and flows:
+The DisEngage UI wireframe, designed in Figma, outlines key pages and flows:
 - **Login**: Simple page for Google OAuth (future integration).
 - **Landing Page**: Welcome page with access to event categories.
 - **Category Page**: Displays events sorted by category, allowing users to explore various event types.
 - **Cart Page**: Shows selected events, detecting scheduling conflicts if they overlap.
 - **Schedule Review**: Visual calendar view to help users organize their events.
 
-See the full wireframe on Figma: [Evently Wireframe](https://www.figma.com/design/MasSlMeRXTZXFJKS1GPhe0/PPDS---wireframe?node-id=0-1&t=kliAEk92ZPicklHd-1)
+See the full wireframe on Figma: [DisEngage Wireframe](https://www.figma.com/design/MasSlMeRXTZXFJKS1GPhe0/PPDS---wireframe?node-id=0-1&t=kliAEk92ZPicklHd-1)
 
 ### Current Functionality and Future Goals
 
@@ -21,7 +21,7 @@ For now, the frontend fetches event data from a pre-scraped CSV file to test out
 
 ## Local Setup
 
-Follow these steps to set up the frontend and backend locally, enabling you to explore the Evently interface with the pre-scraped data.
+Follow these steps to set up the frontend and backend locally, enabling you to explore the DisEngage interface with the pre-scraped data.
 
 ### 1. Clone the Repository
 
