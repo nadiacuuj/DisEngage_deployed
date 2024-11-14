@@ -1,4 +1,5 @@
-# DisEngage - A unique (contrary to popular belief) Web App for NYU Event Management
+# DisEngage
+A unique (contrary to popular belief) Web App for NYU Event Management
 
 **DisEngage** is a full-stack web application designed to streamline event exploration, scheduling, and engagement for NYU students, faculty, and staff. Built with a React frontend and FastAPI backend, it features categorized event listings, personalized scheduling, and conflict detection. Recent updates introduce an organizer rating and review system, and future plans include a chat feature for event discussions.
 
@@ -17,7 +18,7 @@
 - **Event Chat**: A feature for attendees to discuss event details, such as dietary options and accessibility.
 
 
-### Wireframe Overview
+## Wireframe Overview
 
 
 The DisEngage UI wireframe, designed in Figma, outlines key pages and flows:
@@ -31,7 +32,7 @@ The DisEngage UI wireframe, designed in Figma, outlines key pages and flows:
 Wireframe link: [DisEngage Wireframe](https://www.figma.com/design/MasSlMeRXTZXFJKS1GPhe0/PPDS---wireframe?node-id=0-1&t=kliAEk92ZPicklHd-1)
 
 
-### API Endpoints
+## API Endpoints
 
 - **GET /api/events**: Retrieves categorized event listings.
 - **POST /api/reviews**: Submits reviews and ratings for events or organizers.
