@@ -20,7 +20,7 @@ const Login = () => {
 
   return (
     <div className="page">
-      <h1>Welcome to Evently</h1>
+      <h1>Welcome to DisEngage</h1>
       <button className="oauth-button" onClick={handleGoogleLogin}>
         Log in with Google
       </button> {/* This button now simulates OAuth login */}

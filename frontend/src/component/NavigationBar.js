@@ -6,7 +6,7 @@ function Navigationbar(){
         <nav class="flex items-center justify-between flex-wrap bg-violet-800 p-6">
     <div class="flex items-center flex-shrink-0 text-white mr-6">
         <img class="fill-current h-12 w-fill mr-2 bg-white"  src="https://logos-world.net/wp-content/uploads/2021/09/NYU-Logo.png"></img>
-        <span class="font-semibold text-xl tracking-tight">Evently</span>
+        <span class="font-semibold text-xl tracking-tight">DisEngage</span>
     </div>
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
         <div class="text-sm lg:flex-grow">
