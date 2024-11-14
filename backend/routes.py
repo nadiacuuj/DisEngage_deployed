@@ -12,6 +12,7 @@ from jose import jwt
 import requests
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
+from bson import ObjectId
 
 # Load variables from .env file
 load_dotenv()
@@ -34,16 +35,17 @@ async def root():
     return {"message": "Hello, world!"}  # Simple message to verify server is running
 
 # # Route to get all events in the 'event' collection
-# @router.get("/events", response_model=List[Event])
-# async def get_events():
-#     """
-#     Fetch all events stored in the MongoDB collection.
-#     """
-#     events = []  # Store retrieved events here
-#     async for event in events_collection.find():  # Iterate over all events in collection
-#         event["_id"] = str(event["_id"])  # Convert MongoDB ObjectId to string
-#         events.append(Event(**event))  # Convert MongoDB document to Event model
-#     return events  # Return list of events
+@router.get("/events", response_model=List[Event])
+async def get_events():
+    """
+    Fetch all events stored in the MongoDB collection.
+    """
+    events = []  # Store retrieved events here
+    async for event in events_collection.find():  # Iterate over all events in collection
+        if "_id" in event and isinstance(event["_id"], str):
+            event["_id"] = ObjectId(event["_id"])
+        events.append(Event(**event))  # Convert MongoDB document to Event model
+    return events  # Return list of events
 
 # # Route to scrape new events and store them in MongoDB
 # @app.post("/scrape-events")
