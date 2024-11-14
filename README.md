@@ -1,21 +1,41 @@
 # DisEngage - A unique (contrary to popular belief) Web App for NYU Event Management
 
-**DisEngage** aims to (hopefully) be a web application that will streamline event exploration and scheduling for NYU students, faculty, and staff. The frontend, developed in React, displays categorized event listings, manages a personalized event cart, and features a schedule review tool to avoid overlap. 
+**DisEngage** is a full-stack web application designed to streamline event exploration, scheduling, and engagement for NYU students, faculty, and staff. Built with a React frontend and FastAPI backend, it features categorized event listings, personalized scheduling, and conflict detection. Recent updates introduce an organizer rating and review system, and future plans include a chat feature for event discussions.
+
+## Features
+
+### Current Functionality
+
+- **User Authentication**: Supports Google OAuth for login.
+- **Event Exploration**: Browse events by category, add to a personalized event cart, and check for scheduling conflicts.
+- **Schedule Review**: Visual calendar to manage events and detect overlaps.
+- **Rating and Review System**: Users can rate organizers and leave feedback, helping others choose events based on organizer quality.
+- **Backend API**: Includes endpoints for retrieving event data, submitting reviews, and dynamically scraping events from NYU Engage.
+
+### Planned Features
+
+- **Event Chat**: A feature for attendees to discuss event details, such as dietary options and accessibility.
+
 
 ### Wireframe Overview
+
 
 The DisEngage UI wireframe, designed in Figma, outlines key pages and flows:
 - **Login**: Simple page for Google OAuth (future integration).
 - **Landing Page**: Welcome page with access to event categories.
 - **Category Page**: Displays events sorted by category, allowing users to explore various event types.
-- **Cart Page**: Shows selected events, detecting scheduling conflicts if they overlap.
 - **Schedule Review**: Visual calendar view to help users organize their events.
+- **Cart Page**: Shows selected events, detecting scheduling conflicts if they overlap.
+- **Event Review Page**: Users can rate and review organizers.
 
-See the full wireframe on Figma: [DisEngage Wireframe](https://www.figma.com/design/MasSlMeRXTZXFJKS1GPhe0/PPDS---wireframe?node-id=0-1&t=kliAEk92ZPicklHd-1)
+Wireframe link: [DisEngage Wireframe](https://www.figma.com/design/MasSlMeRXTZXFJKS1GPhe0/PPDS---wireframe?node-id=0-1&t=kliAEk92ZPicklHd-1)
 
-### Current Functionality and Future Goals
 
-For now, the frontend fetches event data from a pre-scraped CSV file to test out components and design interactions. The ultimate goal is to seamlessly integrate the backend API with MongoDB, so new events from NYU Engage are dynamically scraped, stored, and served to the frontend, keeping the event listings fresh and updated in real-time.
+### API Endpoints
+
+- **GET /api/events**: Retrieves categorized event listings.
+- **POST /api/reviews**: Submits reviews and ratings for events or organizers.
+- **GET /api/organizers/{id}/ratings**: Fetches rating data for a specific organizer.
 
 ---
 
