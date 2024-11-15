@@ -16,7 +16,7 @@ function Navigationbar(){
         <a href="/OrganizationList" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
             Organization List
         </a>
-        <a href="/dummy_category" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
+        <a href="/categories" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
             Event page
         </a>
         </div>

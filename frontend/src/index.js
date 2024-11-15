@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+
 console.log("API Base URL:", process.env.REACT_APP_API_BASE_URL);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

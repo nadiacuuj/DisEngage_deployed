@@ -1,36 +1,60 @@
 import CategorySelect from "../component/CategorySelect";
 import EventCard from "../component/EventCard";
 import Navigationbar from "../component/NavigationBar";
+// Fetching Data from Backend:
+// This component displays event categories fetched from the backend.
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
-let event1 = {
-    ImageSrc:"https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg",
-    EventTitle: "PMC women in Product Management and a bit longer",
-    EventLocation: "Kimmel Center",
-    EventTime: "Monday 12:30 PM - 5:00 PM"
-}
+const CategoryPage = () => {
+  const [categories, setCategories] = useState([]); // State to hold categories
+  const [events, setEvents] = useState([]);
+  const uri = process.env.REACT_APP_API_BASE_URL + '/api'
 
-let event_rows = []
-for (let i =0; i<9; i++ ){
-    event_rows.push(<EventCard event = {event1}/>)
-}
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Make GET request to fetch events from backend
+        const eventsUri = uri + '/events'
+        const response = await axios.get(`http://127.0.0.1:8000/api/events`);
+        
+        // Extract unique categories from events
+        const events = response.data; // Access the array of event objects
+        setEvents(events);
+        console.log(events);
+        console.log(events[0]);
+        const uniqueCategories = [...new Set(events.map(event => event.category).filter(Boolean))]
+        .map((category, index) => ({ id: index + 1, name: category }));
+        
+        setCategories(uniqueCategories); // Update state with unique categories
+      } catch (error) {
+        console.error("Error fetching categories:", error); // Handle errors
+      }
+    };
 
-const DummyCategory = () => {
-    return (
-    <div>
+    fetchCategories(); // Call function when component mounts
+  }, []);
+
+  return (
+      <div>
         <Navigationbar />
-    <div class="flex w-screen mt-5">
-        <div class="mx-8 pl-8" >
-            <CategorySelect/>
-        </div>
+        <div class="flex w-screen mt-5">
+            <div class="mx-8 pl-8" >
+                <CategorySelect categories={categories}/>
+            </div>
 
-        <div class="w-3/4 mr-8 flex flex-wrap gap-y-6 gap-x-4 justify-center">
-                {event_rows}
+            <div class="w-3/4 mr-8 flex flex-wrap gap-y-6 gap-x-4 justify-center">
+                {events.map((event) => (
+                <div>
+                    <EventCard key={event.id} event={event}/>
+                </div>
+                ))}  
+            </div>
+
         </div>
     </div>
-    
-    </div>
-      )
-}
+    )
+};
 
 
-export default DummyCategory;
+export default CategoryPage
