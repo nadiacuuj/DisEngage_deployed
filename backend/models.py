@@ -21,7 +21,7 @@ class User(BaseModel):
     email: str = Field(...)
     last_login: Optional[datetime]
     name: str = Field(...)
-    engane_events: Optional[List[PyObjectId]] = None
+    engage_events: Optional[List[PyObjectId]] = None
     google_events: Optional[List[PyObjectId]] = None
 
     class Config:

@@ -49,9 +49,74 @@ async def get_events():
         events.append(Event(**event))  # Convert MongoDB document to Event model
     return events  # Return list of events
 
-@router.post("/addCart")
-async def post_events():
-    print()
+#UPDATING USER ENGAGE EVENTS
+class UpdateEngageEventsRequest(BaseModel):
+    token: str
+    event_ids: List[str]
+
+@router.post("/updateEngageEvents")
+async def update_engage_events(request: UpdateEngageEventsRequest):
+    try:
+        token_decoded = jwt.decode(request.token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+        google_id = token_decoded['google_id']
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    
+    found_user = users_collection.find_one({"google_id": google_id})
+    if not found_user:
+        raise Exception("User not found")
+    
+    users_collection.update_one({"google_id": google_id}, {"$addToSet": {"engage_events": {'$each': request.event_ids}}})
+
+    return {"Response": "Updated user engage evens successfully"}
+
+
+#GET USER INFO FOR CART
+@router.get("/getUserInfo")
+async def get_user_info(request: Request):
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Decode the token to get the google_id
+    try:
+        decoded_token = jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+        google_id = decoded_token["google_id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    
+    # Find the user by google_id in the database
+    user = users_collection.find_one({"google_id": google_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Return the full user information
+    return user  # This will return the whole user document as the response
+
+
+#DELETE ENGAGE EVENTS FROM USER
+@router.post("/clearEngageEvents")
+async def get_user_info(token: str):
+    try:
+        decoded_token = jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+        google_id = decoded_token["google_id"]
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    
+    # Find the user by google_id in the database
+    user = users_collection.find_one({"google_id": google_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Clear the engage_events list
+    users_collection.update_one(
+        {"google_id": google_id},
+        {"$set": {"engage_events": []}}  # Set the engage_events field to an empty array
+    )
+    
+    return {"detail": "User engage_events list cleared successfully"}
+
 
 # # Route to scrape new events and store them in MongoDB
 # @app.post("/scrape-events")
@@ -121,7 +186,8 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
     users_collection.update_one({'google_id': user_data.google_id}, {'$set': user_data.model_dump(exclude={"id"})}, upsert=True)
 
     payload = {
-        "access_token": access_token
+        "access_token": access_token,
+        "google_id": user_info_j["id"]
     }
     token = jwt.encode(payload, GOOGLE_CLIENT_SECRET, algorithm="HS256")
 
