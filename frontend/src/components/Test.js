@@ -27,12 +27,13 @@ const LandingPage = () => {
 
   async function updateUser(){
     userInfo = getUserInfo();
-    
 
     const response = await fetch("http://127.0.0.1:8000/api/updateEngageEvents", {
         method: 'POST',
         body: {'token': JSON.stringify(token), "google_id": userInfo['google_id']}
     })
+
+    return response
   }
 
   return (
