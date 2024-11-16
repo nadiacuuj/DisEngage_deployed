@@ -11,11 +11,24 @@ import { useNavigate } from 'react-router-dom'; // useNavigate replaces useHisto
 const Login = () => {
   const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
   const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
+  let isRequestInProgress = false;
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (isRequestInProgress) return;
+
+    isRequestInProgress = true;
+
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid email profile&access_type=offline&prompt=consent`;
 
     window.location.href = googleAuthUrl;
+
+    // Reset the flag after a delay to allow navigation
+    setTimeout(() => {
+      isRequestInProgress = false;
+    }, 1000);
   };
 
   return (

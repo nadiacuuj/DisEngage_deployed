@@ -6,13 +6,14 @@ import motor.motor_asyncio # MongoDB async driver
 import os # For accessing environment variables
 from dotenv import load_dotenv # To load environment variables from .env
 from fastapi import APIRouter, HTTPException, Body, Request, Response, HTTPException, Depends
-from models import Event, EventUpdate
+from models import Event, User
 from typing import List
 from jose import jwt
 import requests
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
 from bson import ObjectId
+from datetime import datetime, timezone
 
 # Load variables from .env file
 load_dotenv()
@@ -26,6 +27,7 @@ DB_NAME = os.getenv("MONGODB_DB_NAME")
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
 database = client[DB_NAME]  # Access the 'PPDS' database
 events_collection = database.get_collection("event")  # Collection for 'event' data within the database
+users_collection = database.get_collection("users")
 
 router = APIRouter()
 
@@ -46,6 +48,10 @@ async def get_events():
             event["_id"] = ObjectId(event["_id"])
         events.append(Event(**event))  # Convert MongoDB document to Event model
     return events  # Return list of events
+
+@router.post("/addCart")
+async def post_events():
+    print()
 
 # # Route to scrape new events and store them in MongoDB
 # @app.post("/scrape-events")
@@ -97,11 +103,32 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
     
     response = requests.post(token_url, data=data)
     access_token = response.json().get("access_token")
+    print(access_token)
     user_info = requests.get(
         "https://www.googleapis.com/oauth2/v1/userinfo",
         headers={"Authorization": f"Bearer {access_token}"}
     )
-    return user_info.json()
+    print(user_info.json())
+    user_info_j = user_info.json()
+
+    user_data = User(
+        google_id=user_info_j["id"],
+        email=user_info_j["email"],
+        name=user_info_j["name"],
+        last_login=datetime.now(timezone.utc),
+    )
+
+    users_collection.update_one({'google_id': user_data.google_id}, {'$set': user_data.model_dump(exclude={"id"})}, upsert=True)
+
+    payload = {
+        "access_token": access_token
+    }
+    token = jwt.encode(payload, GOOGLE_CLIENT_SECRET, algorithm="HS256")
+
+    # Step 5: Return the token
+    
+    return {"token": token}
+
 
 @router.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):

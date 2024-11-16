@@ -17,9 +17,12 @@ class PyObjectId(ObjectId):
 
 class User(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
-    name: str = Field(...)
-    netid: str = Field(...)
+    google_id: str
     email: str = Field(...)
+    last_login: Optional[datetime]
+    name: str = Field(...)
+    engane_events: Optional[List[PyObjectId]] = None
+    google_events: Optional[List[PyObjectId]] = None
 
     class Config:
         populate_by_name = True
