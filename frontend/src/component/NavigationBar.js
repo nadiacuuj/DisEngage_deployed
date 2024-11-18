@@ -10,9 +10,6 @@ function Navigationbar(){
     </div>
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
         <div class="text-sm lg:flex-grow">
-        <a href="/CategorySelect" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
-            CategorySelect component test
-        </a>
         <a href="/OrganizationList" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">
             Organization List
         </a>

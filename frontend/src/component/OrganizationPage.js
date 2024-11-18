@@ -20,10 +20,10 @@ const data = [
   ];
 
 let event1 = {
-    ImageSrc:"https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg",
-    EventTitle: "PMC women in Product Management and a big longer?",
-    EventLocation: "Kimmel Center",
-    EventTime: "Monday 12:30 PM - 5:00 PM"
+    name: "PMC women in Product Management and a big longer?",
+    venue: "Kimmel Center",
+    startTime: "2024-11-13T14:30:00.000+00:00",
+    descroption: "lol"
 };
 
 
