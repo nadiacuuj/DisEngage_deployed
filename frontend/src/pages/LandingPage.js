@@ -11,7 +11,7 @@ const LandingPage = () => {
     <div className="page">
       <h2>Welcome to Evently</h2> {/* Welcome message */}
       <button onClick={() => navigate('/oauth')}>Navigate to NYU Engage</button> {/* Button to navigate to OAuth page */}
-      <button onClick={() => navigate('/categories')}>Search by Category</button> {/* Button to navigate to category page */}
+      <button onClick={() => navigate('/dummy_category')}>Search by Category</button> {/* Button to navigate to category page */}
     </div>
   );
 };
