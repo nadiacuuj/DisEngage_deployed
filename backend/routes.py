@@ -238,8 +238,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/login/google")
 async def login_google():
+    # Add calendar.readonly to the scope
+    scopes = [
+        "openid",
+        "profile", 
+        "email",
+        "https://www.googleapis.com/auth/calendar.readonly"  # Add this scope
+    ]
+    scope_string = "%20".join(scopes)
+    
     return {
-        "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email&access_type=offline"
+        "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={GOOGLE_CLIENT_ID}&redirect_uri={GOOGLE_REDIRECT_URI}&scope={scope_string}&access_type=offline"
     }
 
 @router.post("/auth/google")
