@@ -21,7 +21,7 @@ const Login = () => {
 
     isRequestInProgress = true;
 
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid email profile&access_type=offline&prompt=consent`;
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${encodeURIComponent('openid email profile https://www.googleapis.com/auth/calendar.readonly')}&access_type=offline&prompt=consent`;
 
     window.location.href = googleAuthUrl;
 
