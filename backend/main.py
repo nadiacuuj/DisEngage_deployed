@@ -48,7 +48,8 @@ async def lifespan(app: FastAPI):
     print("Disconnected from MongoDB and stopped the scheduler.")
 
 # app = FastAPI(lifespan=lifespan)  # Pass the lifespan context to FastAPI, to enable scraping!!! 
-app = FastAPI()
+app = FastAPI()   
+# his will scrape
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,

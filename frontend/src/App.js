@@ -13,6 +13,7 @@ import CategoryPage from './pages/CategoryPage';
 import OrganizationListPage from './pages/OrganizationList';
 import OAuth2Callback from './pages/OAuth2Callback';
 import TestPage from './pages/Test';
+import DemoApp from './pages/CalendarPage';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/schedule-review" element={<ScheduleReview />} /> {/* Route to schedule review page */}
           <Route path="/callback" element={<OAuth2Callback />} /> {/* Route to OAuth page */}
           <Route path='/test' element={<TestPage />}></Route>
+          <Route path='/calendar' element = {<DemoApp />}></Route>
         </Routes>
       </div>
     </Router>

@@ -37,10 +37,6 @@ const Login = () => {
       <button className="oauth-button" onClick={handleGoogleLogin}>
         Log in with Google
       </button> {/* This button now simulates OAuth login */}
-      <p className="placeholder-note">
-        * Note: Google OAuth is not yet implemented. This button is a placeholder for testing.
-        When ready, it will authorize your Google account to log in.
-      </p> {/* Display message to indicate placeholder */}
     </div>
   );
 };
