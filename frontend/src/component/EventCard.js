@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import './EventCard.css'; // Import the external CSS file
+import './EventCard.css'; // Ensure the CSS file is updated for the new button placement
 
 function EventCard({ event }) {
     const [isExpanded, setIsExpanded] = useState(false); // State to track if the card is expanded
@@ -20,36 +20,52 @@ function EventCard({ event }) {
     };
 
     return (
-        <div 
-            // The main container for the event card
-            className={`w-[333.13px] h-fit shadow-md hover:shadow-2xl border overflow-hidden bg-slate-100 rounded-lg ${isExpanded ? 'expanded' : ''}`}
-            onClick={handleToggleExpand}
-        >
-            
-            {/* Dynamically render the event image or fallback to a default image */}
-            <img
-                className="object-cover h-40 w-full"
-                src={event.image || "https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg"}
-                alt={`${event.name} image`}
-            />
-            
-            <div className='w-full'>
-                <p className="font-geist_regular text-lg leading-tight p-2 m-2 max-w-[331px] break-words">{event.name}</p>
-                <p className="font-geist_regular text-sm px-2 mx-2">{event.venue}</p>
-                <p className="font-geist_regular text-sm px-2 mx-2 pb-2 mb-2">{formattedDate}</p>
+        <>
+            {/* The main event card container */}
+            <div
+                className="w-[333.13px] h-fit shadow-md hover:shadow-2xl border overflow-hidden bg-slate-100 rounded-lg cursor-pointer"
+                onClick={handleToggleExpand}
+            >
+                <img
+                    className="object-cover h-40 w-full"
+                    src={event.image || "https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg"}
+                    alt={`${event.name} image`}
+                />
+                <div className="w-full">
+                    <p className="font-geist_regular text-lg leading-tight p-2 m-2 max-w-[331px] break-words">{event.name}</p>
+                    <p className="font-geist_regular text-sm px-2 mx-2">{event.venue}</p>
+                    <p className="font-geist_regular text-sm px-2 mx-2 pb-2 mb-2">{formattedDate}</p>
+                </div>
             </div>
-            
-            {/* This section is conditionally rendered only if the card is expanded */}
+
+            {/* Expanded view rendered as an overlay */}
             {isExpanded && (
-                <div className="expanded-content">
-                    {/* Strip HTML tags and render the sanitized description */}
-                    <p className="text-base p-4">{stripHtml(event.description)}</p>
-                    
-                    {/* Close button to collapse the expanded view when clicked */}
-                    <button onClick={handleToggleExpand} className="close-button">Close</button>
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white w-3/4 max-w-2xl rounded-lg shadow-lg p-8 relative">
+                        {/* Event details in expanded view */}
+                        <img
+                            className="object-cover w-full h-64 rounded-lg mb-4"
+                            src={event.image || "https://meet.nyu.edu/wp-content/uploads/2023/03/22-0531_NYU_125-1-scaled.jpg"}
+                            alt={`${event.name} image`}
+                        />
+                        <h2 className="text-2xl font-geist_regular mb-4">{event.name}</h2>
+                        <p className="text-sm mb-4">{formattedDate}</p>
+                        <p className="text-sm mb-4">{event.venue}</p>
+                        <p className="text-base">{stripHtml(event.description)}</p>
+
+                        {/* Close button at the bottom center */}
+                        <div className="flex justify-center mt-6">
+                            <button
+                                onClick={handleToggleExpand}
+                                className="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }
 
