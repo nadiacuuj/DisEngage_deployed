@@ -111,7 +111,7 @@ async def insert_events_to_mongo(return_data_only=False):
 
                         event_info = transform_event_data(event_dict)
 
-                        print(f'Parsed event ID: {event_info.engage_id}')
+                        #print(f'Parsed event ID: {event_info.engage_id}')
                         events_data.append(event_info.model_dump(by_alias=True))
                 else:
                     print(f"Failed request for {full_url}, Status code: {response.status_code}")
