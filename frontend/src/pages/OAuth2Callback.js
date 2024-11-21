@@ -42,7 +42,7 @@ function OAuth2Callback() {
       })
       .then(data => {
         console.log('Success response:', data);
-        localStorage.setItem('token', data['access_token']);
+        localStorage.setItem('token', data['id']);
         const tokenTest = localStorage.getItem("token");
         console.log(`TOKENT TESTING: ${tokenTest}`)
         navigate('/landing');

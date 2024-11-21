@@ -22,3 +22,7 @@ APScheduler #schedule scraping within 1 day intervals
 google-auth # For Google OAuth2.0 authentication
 google-auth-oauthlib # For OAuth2.0 flow with Google
 python-jose
+
+google-api-python-client
+google-auth-httplib2 
+google-auth-oauthlib

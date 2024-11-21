@@ -14,6 +14,8 @@ from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
 from bson import ObjectId
 from datetime import datetime, timezone
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 # Load variables from .env file
 load_dotenv()
@@ -75,24 +77,31 @@ async def update_engage_events(request: UpdateEngageEventsRequest):
 @router.get("/getUserInfo")
 async def get_user_info(request: Request):
     token = request.headers.get("Authorization")
+    print(token)
     if token is None or not token.startswith("Bearer "):
+        print("ERROR 1")
         raise HTTPException(status_code=400, detail="Token missing or malformed")
     token = token[7:]  # Remove "Bearer " prefix
-
-    # Decode the token to get the google_id
-    try:
-        decoded_token = jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
-        google_id = decoded_token["google_id"]
-    except jwt.PyJWTError:
-        raise HTTPException(status_code=400, detail="Invalid token")
     
     # Find the user by google_id in the database
-    user = users_collection.find_one({"google_id": google_id})
-    if not user:
+    user_info = await users_collection.find_one({"google_id": token})
+    print(user_info)
+    if not user_info:
+        print("ERROR 3")
         raise HTTPException(status_code=404, detail="User not found")
     
+    user_data = {
+        "google_id": user_info["google_id"],
+        "email": user_info["email"],
+        "name":user_info["name"],
+        "last_login":user_info['last_login'],
+        'engage_events': user_info['engage_events'],
+        'google_events': user_info['google_events']
+    }
+    
     # Return the full user information
-    return user  # This will return the whole user document as the response
+    print("FINAL STAGE GOOD")
+    return user_data  # This will return the whole user document as the response
 
 
 #DELETE ENGAGE EVENTS FROM USER
@@ -116,6 +125,87 @@ async def get_user_info(token: str):
     )
     
     return {"detail": "User engage_events list cleared successfully"}
+
+@router.get("/getGoogleCalendar")
+async def get_google_calendar(request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    print("TOKEN", token)
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:];  # Remove "Bearer " prefix
+
+    user_info = await users_collection.find_one({"google_id": token})
+    print("USER INFO", user_info['access_token'])
+    print("TIME", datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"))
+    
+    # Call the Google Calendar API
+    
+    # creds = Credentials(token=user_info["access_token"])
+    # try:
+    #     service = build("calendar", "v3", credentials=creds)
+    #     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")  # UTC time
+    #     events_result = (
+    #         service.events()
+    #         .list(
+    #             calendarId="primary",
+    #             timeMin=now,
+    #             maxResults=10,
+    #             singleEvents=True,
+    #             orderBy="startTime",
+    #         )
+    #         .execute()
+    #     )
+    #     events = events_result.get("items", [])
+
+    #     if not events:
+    #         return {"message": "No upcoming events found."}
+
+    #     # Format events
+    #     formatted_events = [
+    #         {"start": event["start"].get("dateTime", event["start"].get("date")),
+    #          "summary": event.get("summary", "No title")}
+    #         for event in events
+    #     ]
+    #     return {"events": formatted_events}
+
+    # except Exception as e:
+    #     raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
+ 
+    try: 
+        response = requests.get(
+            "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+            headers={"Authorization": f"Bearer {user_info['access_token']}"},
+            params={
+                "calendarId":"primary",
+                "maxResults": 10,
+                "singleEvents": True,
+                "orderBy": "startTime",
+                "timeMin": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+            },
+        )
+        print("RESPONSE STATUS", response.status_code)
+        print("RESPONSE CONTENT", response.text)
+        response.raise_for_status()  # Raise an error for bad responses
+        print("RESPONSE", response)
+        events = response.json().get("items", [])
+        print("PARSE RESPONSE", events)
+        
+        if not events:
+            return {"message": "No upcoming events found."}
+
+        # Simplify the events data
+        formatted_events = [
+            {"start": event["start"].get("dateTime", event["start"].get("date")),
+             "summary": event.get("summary", "No title")} 
+            for event in events
+        ]
+        print("FORMATTED EVENTS", formatted_events)
+        return {"events": formatted_events}
+
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
+
 
 
 # # Route to scrape new events and store them in MongoDB
@@ -178,6 +268,7 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
 
     user_data = User(
         google_id=user_info_j["id"],
+        access_token=access_token,
         email=user_info_j["email"],
         name=user_info_j["name"],
         last_login=datetime.now(timezone.utc),
@@ -185,15 +276,15 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
 
     users_collection.update_one({'google_id': user_data.google_id}, {'$set': user_data.model_dump(exclude={"id"})}, upsert=True)
 
-    payload = {
-        "access_token": access_token,
-        "google_id": user_info_j["id"]
-    }
-    token = jwt.encode(payload, GOOGLE_CLIENT_SECRET, algorithm="HS256")
+    # payload = {
+    #     "access_token": access_token,
+    #     "google_id": user_info_j["id"]
+    # }
+    # token = jwt.encode(payload, GOOGLE_CLIENT_SECRET, algorithm="HS256")
 
     # Step 5: Return the token
     
-    return {"token": token}
+    return {"id": user_data.google_id}
 
 
 @router.get("/token")

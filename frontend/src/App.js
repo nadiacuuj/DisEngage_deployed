@@ -12,6 +12,7 @@ import Oauth from './pages/OAuth2Callback';
 import CategoryPage from './pages/CategoryPage';
 import OrganizationListPage from './pages/OrganizationList';
 import OAuth2Callback from './pages/OAuth2Callback';
+import TestPage from './pages/Test';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} /> {/* Route to cart page */}
           <Route path="/schedule-review" element={<ScheduleReview />} /> {/* Route to schedule review page */}
           <Route path="/callback" element={<OAuth2Callback />} /> {/* Route to OAuth page */}
+          <Route path='/test' element={<TestPage />}></Route>
         </Routes>
       </div>
     </Router>

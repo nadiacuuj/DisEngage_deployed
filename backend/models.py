@@ -18,6 +18,7 @@ class PyObjectId(ObjectId):
 class User(BaseModel):
     id: Optional[PyObjectId] = Field(default=None, alias="_id")
     google_id: str
+    access_token: str
     email: str = Field(...)
     last_login: Optional[datetime]
     name: str = Field(...)
