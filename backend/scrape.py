@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
+import pandas as pd # unused in this script but kept as part of original code
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
@@ -14,19 +14,16 @@ import motor.motor_asyncio
 import asyncio
 from models import Event
 from datetime import datetime, timezone
-from urllib.parse import quote_plus
-# Load environment variables from .env file
+from urllib.parse import quote_plus # unused in this script but kept as part of original code
 
 # Function to insert events into MongoDB
-async def insert_events_to_mongo():
+async def insert_events_to_mongo(return_data_only=False):
     print("Starting scraping process...")
     load_dotenv()
 
     # MongoDB configuration
     MONGODB_URI = os.getenv('MONGODB_URI')
     DB_NAME = os.getenv('MONGODB_DB_NAME')
-
-# MongoDB URI
 
     # Initialize MongoDB client
     client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
@@ -40,7 +37,9 @@ async def insert_events_to_mongo():
 
     # Get the total count of events on the page
     events_count_soup = BeautifulSoup(driver.page_source, 'html.parser')
-    all_events_count = events_count_soup.find("div", attrs={"style": "color: rgb(73, 73, 73); margin: 15px 0px 0px; font-style: italic; text-align: left;"})
+    all_events_count = events_count_soup.find(
+        "div", attrs={"style": "color: rgb(73, 73, 73); margin: 15px 0px 0px; font-style: italic; text-align: left;"}
+    )
     match = re.search(r"\d{4}", all_events_count.text)
     all_events_count_number = int(match.group()) if match else 0
     count = (all_events_count_number // 15) + 1
@@ -56,7 +55,6 @@ async def insert_events_to_mongo():
             return False
 
     # Load additional events by clicking the "Load more" button
-    # make count -= 1 to capture all events!
     while count > 0:
         load_more()
         count -= 10
@@ -82,7 +80,9 @@ async def insert_events_to_mongo():
             "description": event_dict.get('description', ''),
             "category": category_array,
             "venue": event_dict.get('address', {}).get('name', ''),
-            "responseStatus": None  # Default if not provided
+            "responseStatus": None,  # Default if not provided
+            # NEW
+            "image": event_dict.get('imageUrl')  # Include the image URL
         }
 
         return Event(**event_data)
@@ -122,11 +122,7 @@ async def insert_events_to_mongo():
 
     # Fetch event data from each event page
     result = request_pages(event_links)
-    # Quit the driver after scraping is complete
-    driver.quit()
-    # Clear the current events in the collection to avoid duplicates
+    driver.quit()  # Quit the driver after scraping is complete
     await events_collection.delete_many({})
-    # Insert new events
     await events_collection.insert_many(result)
-    print(f"Inserted {len(result)} events into MongoDB.")
-
+    print(f"Number of events scraped: {len(result)}") 

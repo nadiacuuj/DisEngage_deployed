@@ -106,8 +106,9 @@ class Event(BaseModel):
     description: Optional[str] = Field(None, description="Description of the event")
     category: Optional[List[str]] = Field(None, description="Category of the event")
     venue: Optional[str] = Field(None, description="Venue of the event")
-    responseStatus: Optional[str] = Field(None, description="Response status of the event")
-    # "needsAction", "declined", "tentative", "accepted"
+    responseStatus: Optional[str] = Field(None, description="Response status of the event")  # "needsAction", "declined", "tentative", "accepted"
+    # NEW: Add image attribute
+    image: Optional[str] = Field(None, description="Image URL of the event")
 
     class Config:
         populate_by_name = True
@@ -124,7 +125,8 @@ class Event(BaseModel):
                 "startTime": "2024-11-01T09:00:00Z",
                 "endTime": "2024-11-01T17:00:00Z",
                 "createdAt": "2024-10-01T10:00:00Z",
-                "source": "NYU Engage"
+                "source": "NYU Engage",
+                "image": "https://example.com/image.png"
             }
         }
 
