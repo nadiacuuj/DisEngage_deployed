@@ -69,6 +69,25 @@ const TestPage = () => {
     }
   }
 
+  async function fetchOneEvent(){
+    try{
+      const response = await fetch("http://127.0.0.1:8000/api/oneEvent",{
+        method: "GET",
+        headers: {
+          EventId: "673f8724c883bd119684bbb0"
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Error fetching calendar events: ${response.statusText}`);
+      }
+      const data = await response.json();
+      console.log("EEEEVENT DATA", data)
+    }
+    catch (error) {
+      console.error("Failed to fetch calendar events:", error);
+    }
+  }
+
   return (
     <div className="page">
       <h2>Welcome to Evently</h2> {/* Welcome message */}
@@ -86,7 +105,7 @@ const TestPage = () => {
       )}
 
       <button>Get User info</button>
-      <button onClick={fetchGoogleCalendarEvents}>Fetch Google Calendar Events</button> {/* Button to fetch Google Calendar events */}
+      <button onClick={fetchOneEvent}>Fetch Google Calendar Events</button> {/* Button to fetch Google Calendar events */}
 
       {calendarEvents.length > 0 ? (
         <div>

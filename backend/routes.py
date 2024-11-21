@@ -56,6 +56,21 @@ class UpdateEngageEventsRequest(BaseModel):
     token: str
     event_ids: List[str]
 
+
+@router.get("/oneEvent")
+async def get_one_event(request: Request):
+    event_id = request.headers.get("EventId")
+
+    print(f'EVENT ID: {event_id}')   
+
+    event = await events_collection.find_one({"_id": event_id})
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    return event
+
+
+
 @router.post("/updateEngageEvents")
 async def update_engage_events(request: UpdateEngageEventsRequest):
     try:
