@@ -1,0 +1,32 @@
+.weekly-calendar {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+.day-column {
+    min-width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.event-card {
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.navigation-buttons {
+    margin-top: 1rem;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
