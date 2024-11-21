@@ -13,11 +13,15 @@ function EventCard({ event }) {
     const date = new Date(event.startTime);
     const formattedDate = format(date, "MMMM do, yyyy, hh:mm a");
 
+    // Function to strip HTML tags from the description
+    const stripHtml = (html) => {
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        return doc.body.textContent || "";
+    };
+
     return (
         <div 
             // The main container for the event card
-            // `hover:shadow-2xl` applies the hover effect, making the shadow larger when hovered
-            // `onClick={handleToggleExpand}` allows the card to expand to fullscreen when clicked
             className={`w-[333.13px] h-fit shadow-md hover:shadow-2xl border overflow-hidden bg-slate-100 rounded-lg ${isExpanded ? 'expanded' : ''}`}
             onClick={handleToggleExpand}
         >
@@ -38,8 +42,8 @@ function EventCard({ event }) {
             {/* This section is conditionally rendered only if the card is expanded */}
             {isExpanded && (
                 <div className="expanded-content">
-                    {/* Additional content displayed when expanded */}
-                    <p className="text-base p-4">{event.description}</p>
+                    {/* Strip HTML tags and render the sanitized description */}
+                    <p className="text-base p-4">{stripHtml(event.description)}</p>
                     
                     {/* Close button to collapse the expanded view when clicked */}
                     <button onClick={handleToggleExpand} className="close-button">Close</button>
