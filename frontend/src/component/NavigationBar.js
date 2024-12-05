@@ -1,12 +1,15 @@
 //https://v1.tailwindcss.com/components/navigation#
+import {Link} from "react-router-dom";
 
 function Navigationbar(){
 
     return(
         <nav class="flex items-center justify-between flex-wrap bg-violet-800 p-6">
     <div class="flex items-center flex-shrink-0 text-white mr-6">
+        <Link to="/landing">
         <img class="fill-current h-12 w-fill mr-2 bg-white"  src="/logo.png"></img>
         <span class="font-semibold text-xl tracking-tight">DisEngage</span>
+        </Link>
     </div>
     <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
         <div class="text-sm lg:flex-grow">

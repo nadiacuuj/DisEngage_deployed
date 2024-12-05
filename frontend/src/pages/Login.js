@@ -32,8 +32,27 @@ const Login = () => {
   };
 
   return (
-    <div className="page">
-      <h1>Welcome to DisEngage</h1>
+    <div className="justify-items-center">
+      <div className="flex flex-wrap w-1/2 p-5 m-5 items-center">
+        <img src="/squished-logo.png" className='w-1/2'></img>
+        <p className="w-1/2 text-xl font-semi-bold">Dis-engage in tedious event registration and scheduling</p>
+      </div>
+
+      <div className="flex flex-wrap -m-7">
+        <div className="justify-items-center p-5 m-5">
+          <img src ="/google-logo.png" className= "w-48 h-48 p-5 m-7"></img>
+          <p className="max-w-1/2">1. log in using your gmail</p>
+        </div>
+        <div className="justify-items-center p-5 m-5">
+          <img src= "/gcal.png" className="w-48 h-48 p-5 m-7"></img>
+          <p className="max-w-48">2. we will sync your google calendar automatically</p>
+        </div>
+        <div className="justify-items-center p-5 m-5">
+          <img src="/cart-icon.png" className="w-48 h-48 p-5 m-7"></img>
+          <p className="max-w-48">3. enjoy shopping events without a hassle!</p>
+        </div>
+      </div>
+      
       <button className="oauth-button" onClick={handleGoogleLogin}>
         Log in with Google
       </button> {/* This button now simulates OAuth login */}
