@@ -20,10 +20,10 @@ const data = [
   ];
 
 let event1 = {
-    name: "PMC women in Product Management and a big longer?",
+    name: "PMC women in Product Management",
     venue: "Kimmel Center",
     startTime: "2024-11-13T14:30:00.000+00:00",
-    descroption: "lol"
+    description: "demo - event"
 };
 
 
