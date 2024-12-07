@@ -55,6 +55,9 @@ function EventCard({ event }) {
 
                         {/* Close button at the bottom center */}
                         <div className="flex justify-center mt-6">
+                            <button className ="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700">
+                                Add to cart
+                            </button>
                             <button
                                 onClick={handleToggleExpand}
                                 className="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700"

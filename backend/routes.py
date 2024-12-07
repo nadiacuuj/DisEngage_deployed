@@ -13,7 +13,7 @@ import requests
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
 from bson import ObjectId
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 
@@ -141,6 +141,15 @@ async def get_user_info(token: str):
     
     return {"detail": "User engage_events list cleared successfully"}
 
+now = datetime.now(timezone.utc)
+
+# Calculate the first day of the current week (assuming week starts on Sunday)
+start_of_week = now - timedelta(days=now.weekday() + 1) if now.weekday() != 6 else now
+start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+
+# Convert to ISO format and replace "+00:00" with "Z"
+timeMin = start_of_week.isoformat().replace("+00:00", "Z")
+
 @router.get("/getGoogleCalendar")
 async def get_google_calendar(request: Request):
     # Extract the Authorization token
@@ -196,7 +205,7 @@ async def get_google_calendar(request: Request):
                 "maxResults": 10,
                 "singleEvents": True,
                 "orderBy": "startTime",
-                "timeMin": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+                "timeMin": timeMin,
             },
         )
         print("RESPONSE STATUS", response.status_code)
@@ -220,7 +229,6 @@ async def get_google_calendar(request: Request):
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
-
 
 
 # # Route to scrape new events and store them in MongoDB
