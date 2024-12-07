@@ -99,6 +99,9 @@ const ScheduleReview = () => {
                     <p className="event-time">
                       {format(new Date(event.start), 'h:mm a')}
                     </p>
+                    <p className="event-end">
+                      {format(new Date(event.end), 'h:mm a')}
+                    </p>
                     <p className="event-title">{event.summary}</p>
                   </div>
                 ))}

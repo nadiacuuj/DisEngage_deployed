@@ -53,7 +53,7 @@ const CategoryPage = () => {
             <div class="w-3/4 mr-8 flex flex-wrap gap-y-6 gap-x-4 justify-center">
                 {events.map((event) => (
                 <div>
-                    <EventCard key={event.id} event={event}/>
+                    <EventCard eventKey={event.engage_id} event={event}/>
                 </div>
                 ))}  
             </div>

@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import './EventCard.css'; // Ensure the CSS file is updated for the new button placement
+import getUserInfo from '../apiFunctions/getUserInfo';
+import updateUser from '../apiFunctions/updateEngageEvents';
 
-function EventCard({ event }) {
+function EventCard({ eventKey, event }) {
     const [isExpanded, setIsExpanded] = useState(false); // State to track if the card is expanded
 
     // Function to toggle expansion when the card is clicked
     const handleToggleExpand = () => {
         setIsExpanded(!isExpanded);
     };
+
+    const handleAddCart = () => {
+        let event_id = [];
+        event_id.push(eventKey.toString());
+        updateUser(event_id);
+    }
 
     const date = new Date(event.startTime);
     const formattedDate = format(date, "MMMM do, yyyy, hh:mm a");
@@ -55,7 +63,9 @@ function EventCard({ event }) {
 
                         {/* Close button at the bottom center */}
                         <div className="flex justify-center mt-6">
-                            <button className ="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700">
+                            <button 
+                            onClick={handleAddCart}
+                            className ="bg-purple-600 text-white py-2 px-6 rounded-lg hover:bg-purple-700">
                                 Add to cart
                             </button>
                             <button

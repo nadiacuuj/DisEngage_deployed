@@ -8,7 +8,7 @@ from dotenv import load_dotenv # To load environment variables from .env
 from fastapi import APIRouter, HTTPException, Body, Request, Response, HTTPException, Depends
 from models import Event, User
 from typing import List
-from jose import jwt
+from jose import jwt, JWTError
 import requests
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer
@@ -74,15 +74,19 @@ async def get_one_event(request: Request):
 @router.post("/updateEngageEvents")
 async def update_engage_events(request: UpdateEngageEventsRequest):
     try:
-        token_decoded = jwt.decode(request.token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
-        google_id = token_decoded['google_id']
-    except jwt.PyJWTError:
+        print(f"Token received: {request.token}")
+        print(f"event_ids: {request.event_ids}")
+        # token_decoded = jwt.decode(request.token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+        google_id = request.token
+        # print(f"Decoded Token: {token_decoded}")
+    except JWTError as e:
+        print(f"JWT Error: {str(e)}")
         raise HTTPException(status_code=400, detail="Invalid token")
     
     found_user = users_collection.find_one({"google_id": google_id})
     if not found_user:
         raise Exception("User not found")
-    
+
     users_collection.update_one({"google_id": google_id}, {"$addToSet": {"engage_events": {'$each': request.event_ids}}})
 
     return {"Response": "Updated user engage evens successfully"}
@@ -221,6 +225,7 @@ async def get_google_calendar(request: Request):
         # Simplify the events data
         formatted_events = [
             {"start": event["start"].get("dateTime", event["start"].get("date")),
+             "end":event["end"].get("dateTime", event["end"].get("date")),
              "summary": event.get("summary", "No title")} 
             for event in events
         ]

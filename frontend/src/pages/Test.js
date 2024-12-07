@@ -30,16 +30,26 @@ const TestPage = () => {
         body: JSON.stringify(userId)
     })
   }
-
+  
   async function updateUser(){
     let userInfo = getUserInfo();
 
+    const test_ids = ["123456","23456","99933"]
+    const updateUserBody = 
+    {
+      token: userId,
+      google_id: userInfo['google_id'],
+      event_ids:test_ids,
+    };
+
     const response = await fetch("http://127.0.0.1:8000/api/updateEngageEvents", {
         method: 'POST',
-        body: {'token': JSON.stringify(userId), "google_id": userInfo['google_id']}
-    })
-
-    return response
+        headers: {
+          'Content-Type': 'application/json'
+      },
+        body: JSON.stringify(updateUserBody),
+    });
+    return response   
   }
 
   async function handleUserInfo(){
@@ -98,13 +108,13 @@ const TestPage = () => {
           User Name: {userData.name} <br />
           Email: {userData.email} <br />
           Google ID: {userData.google_id} <br />
-          ENGAGE EVENTS: {userData.engage_events}
+          ENGAGE EVENTS: {userData.engage_events[1]} {userData.engage_events[2]}
         </p>
       ) : (
         <p>No user data available. Please fetch user info.</p>
       )}
 
-      <button>Get User info</button>
+      <button onClick={() => updateUser()}>Get User info</button>
       <button onClick={fetchOneEvent}>Fetch Google Calendar Events</button> {/* Button to fetch Google Calendar events */}
 
       {calendarEvents.length > 0 ? (
