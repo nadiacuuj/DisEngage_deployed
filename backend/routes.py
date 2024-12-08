@@ -63,7 +63,7 @@ async def get_one_event(request: Request):
 
     print(f'EVENT ID: {event_id}')   
 
-    event = await events_collection.find_one({"_id": event_id})
+    event = await events_collection.find_one({"engage_id": int(event_id)})
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
 
@@ -146,13 +146,12 @@ async def get_user_info(token: str):
     return {"detail": "User engage_events list cleared successfully"}
 
 now = datetime.now(timezone.utc)
-
-# Calculate the first day of the current week (assuming week starts on Sunday)
-start_of_week = now - timedelta(days=now.weekday() + 1) if now.weekday() != 6 else now
+# Adjust to get to the most recent Sunday (start of the current week)
+start_of_week = now - timedelta(days=now.weekday() + (0 if now.weekday() == 6 else 1))
 start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
-
 # Convert to ISO format and replace "+00:00" with "Z"
 timeMin = start_of_week.isoformat().replace("+00:00", "Z")
+print("TIME TO BE USED IS:  " ,timeMin)
 
 @router.get("/getGoogleCalendar")
 async def get_google_calendar(request: Request):

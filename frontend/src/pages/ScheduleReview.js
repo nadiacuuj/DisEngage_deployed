@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import { format, startOfWeek, addDays } from 'date-fns';
 import Navigationbar from '../component/NavigationBar';
 import './ScheduleReview.css';
+import getEvent from '../apiFunctions/getEvent';
+import getUserInfo from '../apiFunctions/getUserInfo';
+import getEngageArray from '../apiFunctions/getAllEvents';
 
 const ScheduleReview = () => {
    const [events, setEvents] = useState([]);
@@ -55,10 +58,14 @@ const ScheduleReview = () => {
   };
 
    // Group events by day with more robust logging
-   const getEventsForDay = (date) => {
-    console.log('Current events:', events);
-    console.log('Checking events for date:', format(date, 'yyyy-MM-dd'));
+  const getEventsForDay = (date) => {
+  console.log('Current events:', events);
+  console.log('Checking events for date:', format(date, 'yyyy-MM-dd'));
   
+  console.log("LOOK HERE  ", getEngageArray());  
+
+//  {'start': '2024-12-04T14:00:00-05:00', 'end': '2024-12-04T15:15:00-05:00', 'summary': 'Negotiation'}]
+
     return events.filter(event => {
       try {
         const eventDate = new Date(event.start);
