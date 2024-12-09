@@ -3,17 +3,19 @@ import getUserInfo from "./getUserInfo";
 
 async function getEngageArray() {
     const response = await getUserInfo();
-    const eventData = response.engage_events;
+    const eventData = response.engage_events || [];
 
     console.log("THIS IS ARRAY  ", eventData);
-    // skip first due to empty array default
-    const event_array = []
+    const event_array = [];
 
-    for(let i = 1; i<eventData.length; i++){
-        let event_t = getEvent(eventData[i]);
-        event_array.push(event_t);
+    if (eventData && eventData.length > 1) {
+        for(let i = 1; i < eventData.length; i++){
+            let event_t = await getEvent(eventData[i]);
+            event_array.push(event_t);
+        }
     }
-    console.log("ALL EVENTS: ",event_array);
+    
+    console.log("ALL EVENTS: ", event_array);
     return event_array;
 }
 

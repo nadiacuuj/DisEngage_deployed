@@ -30,3 +30,30 @@
     gap: 1rem;
     justify-content: center;
 }
+
+.calendar-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.calendar-controls button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    color: black;
+}
+
+.calendar-controls button:hover {
+    background-color: #f0f0f0;
+}
+
+.week-range {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
