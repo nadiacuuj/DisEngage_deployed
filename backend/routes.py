@@ -16,6 +16,7 @@ from bson import ObjectId
 from datetime import datetime, timezone, timedelta 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from bs4 import BeautifulSoup
 
 # Load variables from .env file
 load_dotenv()
@@ -159,48 +160,15 @@ timeMax = three_months_later.isoformat().replace("+00:00", "Z")
 async def get_google_calendar(request: Request):
     # Extract the Authorization token
     token = request.headers.get("Authorization")
-    print("TOKEN", token)
     if token is None or not token.startswith("Bearer "):
         raise HTTPException(status_code=400, detail="Token missing or malformed")
-    token = token[7:];  # Remove "Bearer " prefix
+    token = token[7:]  # Remove "Bearer " prefix
 
+    # Get user info to access their access_token
     user_info = await users_collection.find_one({"google_id": token})
-    print("USER INFO", user_info['access_token'])
-    print("TIME", datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"))
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    # Call the Google Calendar API
-    
-    # creds = Credentials(token=user_info["access_token"])
-    # try:
-    #     service = build("calendar", "v3", credentials=creds)
-    #     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")  # UTC time
-    #     events_result = (
-    #         service.events()
-    #         .list(
-    #             calendarId="primary",
-    #             timeMin=now,
-    #             maxResults=10,
-    #             singleEvents=True,
-    #             orderBy="startTime",
-    #         )
-    #         .execute()
-    #     )
-    #     events = events_result.get("items", [])
-
-    #     if not events:
-    #         return {"message": "No upcoming events found."}
-
-    #     # Format events
-    #     formatted_events = [
-    #         {"start": event["start"].get("dateTime", event["start"].get("date")),
-    #          "summary": event.get("summary", "No title")}
-    #         for event in events
-    #     ]
-    #     return {"events": formatted_events}
-
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
- 
     try: 
         response = requests.get(
             "https://www.googleapis.com/calendar/v3/calendars/primary/events",
@@ -210,29 +178,37 @@ async def get_google_calendar(request: Request):
                 "maxResults": 2500,
                 "singleEvents": True,
                 "orderBy": "startTime",
-                "timeMin": timeMin,  # Now starts from 3 months ago
+                "timeMin": timeMin,
                 "timeMax": timeMax,
             },
         )
-        print("RESPONSE STATUS", response.status_code)
-        print("RESPONSE CONTENT", response.text)
-        response.raise_for_status()  # Raise an error for bad responses
-        print("RESPONSE", response)
+        response.raise_for_status()
         events = response.json().get("items", [])
-        print("PARSE RESPONSE", events)
         
         if not events:
-            return {"message": "No upcoming events found."}
+            return {"events": [], "message": "No upcoming events found."}
 
-        # Simplify the events data
+        # Format events and filter out all-day Office/Home events
         formatted_events = [
-            {"start": event["start"].get("dateTime", event["start"].get("date")),
-             "end":event["end"].get("dateTime", event["end"].get("date")),
-             "summary": event.get("summary", "No title")} 
+            {
+                "start": event["start"].get("dateTime", event["start"].get("date")),
+                "end": event["end"].get("dateTime", event["end"].get("date")),
+                "summary": event.get("summary", "No title"),
+                "event_id": event.get("id", ""),
+                "source": "google_calendar"
+            } 
             for event in events
+            if not (
+                # Skip if it's an all-day Office/Home event
+                event["start"].get("date") and  # Has date (all-day) instead of dateTime
+                event.get("summary", "").lower() in ["office", "home"]  # Case-insensitive check
+            )
         ]
-        print("FORMATTED EVENTS", formatted_events)
-        return {"events": formatted_events}
+
+        return {
+            "events": formatted_events,
+            "message": "Calendar events fetched successfully"
+        }
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
@@ -273,7 +249,9 @@ async def login_google():
         "openid",
         "profile", 
         "email",
-        "https://www.googleapis.com/auth/calendar.readonly"  # Add this scope
+        "https://www.googleapis.com/auth/calendar"
+
+
     ]
     scope_string = "%20".join(scopes)
     
@@ -311,9 +289,15 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
         email=user_info_j["email"],
         name=user_info_j["name"],
         last_login=datetime.now(timezone.utc),
+        engage_events=[],
+        google_events=[]
     )
 
-    users_collection.update_one({'google_id': user_data.google_id}, {'$set': user_data.model_dump(exclude={"id"})}, upsert=True)
+    users_collection.update_one(
+        {'google_id': user_data.google_id}, 
+        {'$set': user_data.model_dump(exclude={"id"})}, 
+        upsert=True
+    )
 
     # payload = {
     #     "access_token": access_token,
@@ -329,3 +313,164 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
 @router.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+
+@router.post("/storeFilteredGoogleEvents")  # Changed to POST
+async def store_filtered_google_events(request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    try:
+        # Get filtered events from request body
+        body = await request.json()
+        filtered_events = body.get("filteredEvents", [])
+        
+        # Update user's google_events array with only the filtered events
+        await users_collection.update_one(
+            {"google_id": token},
+            {"$set": {"google_events": filtered_events}}
+        )
+
+        return {
+            "message": "Filtered calendar events stored successfully",
+            "events": filtered_events
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to store filtered events: {str(e)}")
+
+@router.post("/addToGoogleCalendar")
+async def add_to_google_calendar(request: Request):
+    # Extract the Authorization token and event ID
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get event ID from request body
+    body = await request.json()
+    event_id = body.get("event_id")
+    if not event_id:
+        raise HTTPException(status_code=400, detail="Event ID is required")
+
+    # Get user info to verify token
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Get event details from MongoDB
+        event = await events_collection.find_one({"engage_id": int(event_id)})
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        # Create Google Calendar credentials
+        creds = Credentials(
+            token=user_info['access_token']
+        )
+
+        # Build Google Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+
+        # Format event for Google Calendar
+        google_event = {
+            'summary': event['name'],
+            'description': BeautifulSoup(event['description'], 'html.parser').get_text(),
+            'start': {
+                'dateTime': event['startTime'].isoformat(),
+                'timeZone': 'America/New_York',
+            },
+            'end': {
+                'dateTime': event['endTime'].isoformat(),
+                'timeZone': 'America/New_York',
+            },
+            'location': event['venue']
+        }
+
+        # Insert event to Google Calendar
+        created_event = service.events().insert(
+            calendarId='primary',
+            body=google_event
+        ).execute()
+
+        return {
+            "message": "Event added to Google Calendar successfully",
+            "google_event_id": created_event['id']
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add event to Google Calendar: {str(e)}")
+
+@router.delete("/deleteGoogleEvent/{event_id}")
+async def delete_google_event(event_id: str, request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info to access their access_token
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Create Google Calendar credentials
+        creds = Credentials(
+            token=user_info['access_token']
+        )
+
+        # Build Google Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+
+        # Delete the event from Google Calendar
+        service.events().delete(
+            calendarId='primary',
+            eventId=event_id
+        ).execute()
+
+        # Remove the event from user's google_events array
+        users_collection.update_one(
+            {"google_id": token},
+            {"$pull": {"google_events": {"event_id": event_id}}}
+        )
+
+        return {"message": "Event deleted successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete event from Google Calendar: {str(e)}")
+
+@router.delete("/deleteEngageEvent/{event_id}")
+async def delete_engage_event(event_id: str, request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Add 'await' here for the async operation
+        result = await users_collection.update_one(
+            {"google_id": token},
+            {"$pull": {"engage_events": event_id}}
+        )
+
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Event not found in user's engage events")
+
+        return {"message": "Event removed successfully from engage events"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to remove event: {str(e)}")

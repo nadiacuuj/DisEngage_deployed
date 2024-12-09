@@ -22,8 +22,8 @@ class User(BaseModel):
     email: str = Field(...)
     last_login: Optional[datetime]
     name: str = Field(...)
-    engage_events: Optional[List[PyObjectId]] = None
-    google_events: Optional[List[PyObjectId]] = None
+    engage_events: List[str] = Field(default_factory=list)
+    google_events: List[str] = Field(default_factory=list)
 
     class Config:
         populate_by_name = True
@@ -45,7 +45,7 @@ class UserLogin(BaseModel):
         example={
             "access_token": "ya29.a0AfH6SMBx...",
             "refresh_token": "1//0eXy...",
-            "scope": "https://www.googleapis.com/auth/calendar.readonly",
+            "scope": "https://www.googleapis.com/auth/calendar",
             "token_type": "Bearer",
             "expiry_date": 1617211232170
         }

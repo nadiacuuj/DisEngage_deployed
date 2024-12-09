@@ -22,6 +22,12 @@
     background-color: #f0f0f0;
     border-radius: 4px;
     padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.engage-event {
+    background-color: #e3f2fd;  /* Light blue background */
+    border-left: 4px solid #2196f3;  /* Blue accent */
 }
 
 .navigation-buttons {
@@ -56,4 +62,20 @@
     text-align: center;
     margin-bottom: 1rem;
     font-weight: bold;
+}
+
+.confirm-button {
+  display: block;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.confirm-button:hover {
+  background-color: #45a049;
 }
