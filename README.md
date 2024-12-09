@@ -47,7 +47,7 @@ Follow these steps to set up the frontend and backend locally, enabling you to e
 
 ```bash
 git clone <repository-url>
-cd NYU_DisEngage_FullStack
+cd DisEngage
 ```
 
 ### 2. Configure Environment Variables
