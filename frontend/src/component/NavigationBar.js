@@ -21,7 +21,7 @@ function Navigationbar(){
         </a>
         </div>
         <div>
-        <a href="/schedule-review" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-violet-800 hover:bg-white mt-4 lg:mt-0">Cart</a>
+        <a href="/cart" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-violet-800 hover:bg-white mt-4 lg:mt-0">Cart</a>
         </div>
     </div>
     </nav>
