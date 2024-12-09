@@ -22,8 +22,8 @@ class User(BaseModel):
     email: str = Field(...)
     last_login: Optional[datetime]
     name: str = Field(...)
-    engage_events: Optional[List[PyObjectId]] = None
-    google_events: Optional[List[PyObjectId]] = None
+    engage_events: List[str] = Field(default_factory=list)
+    google_events: List[str] = Field(default_factory=list)
 
     class Config:
         populate_by_name = True

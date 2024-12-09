@@ -162,45 +162,12 @@ async def get_google_calendar(request: Request):
     print("TOKEN", token)
     if token is None or not token.startswith("Bearer "):
         raise HTTPException(status_code=400, detail="Token missing or malformed")
-    token = token[7:];  # Remove "Bearer " prefix
+    token = token[7:]  # Remove "Bearer " prefix
 
     user_info = await users_collection.find_one({"google_id": token})
-    print("USER INFO", user_info['access_token'])
-    print("TIME", datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"))
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    # Call the Google Calendar API
-    
-    # creds = Credentials(token=user_info["access_token"])
-    # try:
-    #     service = build("calendar", "v3", credentials=creds)
-    #     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")  # UTC time
-    #     events_result = (
-    #         service.events()
-    #         .list(
-    #             calendarId="primary",
-    #             timeMin=now,
-    #             maxResults=10,
-    #             singleEvents=True,
-    #             orderBy="startTime",
-    #         )
-    #         .execute()
-    #     )
-    #     events = events_result.get("items", [])
-
-    #     if not events:
-    #         return {"message": "No upcoming events found."}
-
-    #     # Format events
-    #     formatted_events = [
-    #         {"start": event["start"].get("dateTime", event["start"].get("date")),
-    #          "summary": event.get("summary", "No title")}
-    #         for event in events
-    #     ]
-    #     return {"events": formatted_events}
-
-    # except Exception as e:
-    #     raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
- 
     try: 
         response = requests.get(
             "https://www.googleapis.com/calendar/v3/calendars/primary/events",
@@ -210,29 +177,39 @@ async def get_google_calendar(request: Request):
                 "maxResults": 2500,
                 "singleEvents": True,
                 "orderBy": "startTime",
-                "timeMin": timeMin,  # Now starts from 3 months ago
+                "timeMin": timeMin,
                 "timeMax": timeMax,
             },
         )
-        print("RESPONSE STATUS", response.status_code)
-        print("RESPONSE CONTENT", response.text)
-        response.raise_for_status()  # Raise an error for bad responses
-        print("RESPONSE", response)
+        response.raise_for_status()
         events = response.json().get("items", [])
-        print("PARSE RESPONSE", events)
         
         if not events:
             return {"message": "No upcoming events found."}
 
-        # Simplify the events data
+        # Format events and prepare for storage
         formatted_events = [
-            {"start": event["start"].get("dateTime", event["start"].get("date")),
-             "end":event["end"].get("dateTime", event["end"].get("date")),
-             "summary": event.get("summary", "No title")} 
+            {
+                "start": event["start"].get("dateTime", event["start"].get("date")),
+                "end": event["end"].get("dateTime", event["end"].get("date")),
+                "summary": event.get("summary", "No title"),
+                "event_id": event.get("id", ""),  # Add unique identifier from Google
+                "source": "google_calendar"
+            } 
             for event in events
         ]
-        print("FORMATTED EVENTS", formatted_events)
-        return {"events": formatted_events}
+
+        # Update user's google_events array
+        # First clear existing events to avoid duplicates
+        await users_collection.update_one(
+            {"google_id": token},
+            {"$set": {"google_events": formatted_events}}
+        )
+
+        return {
+            "events": formatted_events,
+            "message": "Calendar events updated successfully"
+        }
 
     except requests.exceptions.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Failed to fetch calendar events: {str(e)}")
@@ -311,9 +288,15 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
         email=user_info_j["email"],
         name=user_info_j["name"],
         last_login=datetime.now(timezone.utc),
+        engage_events=[],
+        google_events=[]
     )
 
-    users_collection.update_one({'google_id': user_data.google_id}, {'$set': user_data.model_dump(exclude={"id"})}, upsert=True)
+    users_collection.update_one(
+        {'google_id': user_data.google_id}, 
+        {'$set': user_data.model_dump(exclude={"id"})}, 
+        upsert=True
+    )
 
     # payload = {
     #     "access_token": access_token,
