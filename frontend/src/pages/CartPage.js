@@ -63,7 +63,7 @@ const CartPage = () => {
         ))}
       </ul>
       <p>{overlap ? "Schedule Overlap Detected!" : "No Schedule Conflicts"}</p>
-      <button onClick={() => navigate('/schedule-review')}>Review Schedule</button>
+      <button onClick={() => navigate('/cart')}>Review Schedule</button>
     </div>
   );
 };
