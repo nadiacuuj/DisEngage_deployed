@@ -14,7 +14,8 @@ const ScheduleReview = () => {
    const [events, setEvents] = useState([]);
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
-   
+   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date()));
+
    useEffect(() => {
      const fetchCalendarEvents = async () => {
        try {
@@ -51,11 +52,23 @@ const ScheduleReview = () => {
      fetchCalendarEvents();
    }, []);
 
-   // Generate array of 7 days starting from current week
+   // Add navigation functions
+   const goToPreviousWeek = () => {
+     setCurrentWeekStart(prevDate => addDays(prevDate, -7));
+   };
+
+   const goToNextWeek = () => {
+     setCurrentWeekStart(prevDate => addDays(prevDate, 7));
+   };
+
+   const goToCurrentWeek = () => {
+     setCurrentWeekStart(startOfWeek(new Date()));
+   };
+
+   // Update getDaysOfWeek to use currentWeekStart
    const getDaysOfWeek = () => {
-    const startDate = startOfWeek(new Date());
-    return [...Array(7)].map((_, index) => addDays(startDate, index));
-  };
+     return [...Array(7)].map((_, index) => addDays(currentWeekStart, index));
+   };
 
    // Group events by day with more robust logging
   const getEventsForDay = (date) => {
@@ -95,6 +108,19 @@ const ScheduleReview = () => {
        <Navigationbar />
        <div className="page">
          <h3>Weekly Schedule Review</h3>
+         
+         {/* Add navigation controls */}
+         <div className="calendar-controls">
+           <button onClick={goToPreviousWeek}>&lt; Previous Week</button>
+           <button onClick={goToCurrentWeek}>Current Week</button>
+           <button onClick={goToNextWeek}>Next Week &gt;</button>
+         </div>
+         
+         {/* Display current week range */}
+         <div className="week-range">
+           {format(currentWeekStart, 'MMM d, yyyy')} - {format(addDays(currentWeekStart, 6), 'MMM d, yyyy')}
+         </div>
+
          <div className="weekly-calendar">
                   {getDaysOfWeek().map((date) => (
             <div key={date.toString()} className="day-column">
@@ -122,7 +148,6 @@ const ScheduleReview = () => {
 };
 
 export default ScheduleReview;
-
 
 
 
@@ -215,3 +240,4 @@ export default ScheduleReview;
 // };
 
 // export default ScheduleReview;
+

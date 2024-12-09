@@ -146,12 +146,14 @@ async def get_user_info(token: str):
     return {"detail": "User engage_events list cleared successfully"}
 
 now = datetime.now(timezone.utc)
-# Adjust to get to the most recent Sunday (start of the current week)
-start_of_week = now - timedelta(days=now.weekday() + (0 if now.weekday() == 6 else 1))
-start_of_week = start_of_week.replace(hour=0, minute=0, second=0, microsecond=0)
+# Get start date (3 months ago)
+three_months_ago = now - timedelta(days=90)
+# Get end date (3 months from now)
+three_months_later = now + timedelta(days=90)
+
 # Convert to ISO format and replace "+00:00" with "Z"
-timeMin = start_of_week.isoformat().replace("+00:00", "Z")
-print("TIME TO BE USED IS:  " ,timeMin)
+timeMin = three_months_ago.isoformat().replace("+00:00", "Z")
+timeMax = three_months_later.isoformat().replace("+00:00", "Z")
 
 @router.get("/getGoogleCalendar")
 async def get_google_calendar(request: Request):
@@ -204,11 +206,12 @@ async def get_google_calendar(request: Request):
             "https://www.googleapis.com/calendar/v3/calendars/primary/events",
             headers={"Authorization": f"Bearer {user_info['access_token']}"},
             params={
-                "calendarId":"primary",
-                "maxResults": 10,
+                "calendarId": "primary",
+                "maxResults": 2500,
                 "singleEvents": True,
                 "orderBy": "startTime",
-                "timeMin": timeMin,
+                "timeMin": timeMin,  # Now starts from 3 months ago
+                "timeMax": timeMax,
             },
         )
         print("RESPONSE STATUS", response.status_code)
