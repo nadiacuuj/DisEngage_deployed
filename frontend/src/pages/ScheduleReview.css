@@ -22,6 +22,12 @@
     background-color: #f0f0f0;
     border-radius: 4px;
     padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.engage-event {
+    background-color: #e3f2fd;  /* Light blue background */
+    border-left: 4px solid #2196f3;  /* Blue accent */
 }
 
 .navigation-buttons {

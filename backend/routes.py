@@ -159,11 +159,11 @@ timeMax = three_months_later.isoformat().replace("+00:00", "Z")
 async def get_google_calendar(request: Request):
     # Extract the Authorization token
     token = request.headers.get("Authorization")
-    print("TOKEN", token)
     if token is None or not token.startswith("Bearer "):
         raise HTTPException(status_code=400, detail="Token missing or malformed")
     token = token[7:]  # Remove "Bearer " prefix
 
+    # Get user info to access their access_token
     user_info = await users_collection.find_one({"google_id": token})
     if not user_info:
         raise HTTPException(status_code=404, detail="User not found")
@@ -185,30 +185,28 @@ async def get_google_calendar(request: Request):
         events = response.json().get("items", [])
         
         if not events:
-            return {"message": "No upcoming events found."}
+            return {"events": [], "message": "No upcoming events found."}
 
-        # Format events and prepare for storage
+        # Format events and filter out all-day Office/Home events
         formatted_events = [
             {
                 "start": event["start"].get("dateTime", event["start"].get("date")),
                 "end": event["end"].get("dateTime", event["end"].get("date")),
                 "summary": event.get("summary", "No title"),
-                "event_id": event.get("id", ""),  # Add unique identifier from Google
+                "event_id": event.get("id", ""),
                 "source": "google_calendar"
             } 
             for event in events
+            if not (
+                # Skip if it's an all-day Office/Home event
+                event["start"].get("date") and  # Has date (all-day) instead of dateTime
+                event.get("summary", "").lower() in ["office", "home"]  # Case-insensitive check
+            )
         ]
-
-        # Update user's google_events array
-        # First clear existing events to avoid duplicates
-        await users_collection.update_one(
-            {"google_id": token},
-            {"$set": {"google_events": formatted_events}}
-        )
 
         return {
             "events": formatted_events,
-            "message": "Calendar events updated successfully"
+            "message": "Calendar events fetched successfully"
         }
 
     except requests.exceptions.RequestException as e:
@@ -312,3 +310,35 @@ async def auth_google(request: GoogleAuthRequest):  # Use Pydantic model to vali
 @router.get("/token")
 async def get_token(token: str = Depends(oauth2_scheme)):
     return jwt.decode(token, GOOGLE_CLIENT_SECRET, algorithms=["HS256"])
+
+@router.post("/storeFilteredGoogleEvents")  # Changed to POST
+async def store_filtered_google_events(request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    try:
+        # Get filtered events from request body
+        body = await request.json()
+        filtered_events = body.get("filteredEvents", [])
+        
+        # Update user's google_events array with only the filtered events
+        await users_collection.update_one(
+            {"google_id": token},
+            {"$set": {"google_events": filtered_events}}
+        )
+
+        return {
+            "message": "Filtered calendar events stored successfully",
+            "events": filtered_events
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to store filtered events: {str(e)}")
