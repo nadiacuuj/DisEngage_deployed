@@ -145,6 +145,34 @@ const ScheduleReview = () => {
      });
    };
 
+   const handleAddToGoogleCalendar = async () => {
+     try {
+       const userId = localStorage.getItem("token");
+       const userData = await getUserInfo();
+       
+       // Add each engage event to Google Calendar
+       const addPromises = userData.engage_events.map(eventId => 
+         fetch("http://127.0.0.1:8000/api/addToGoogleCalendar", {
+           method: "POST",
+           headers: {
+             "Authorization": `Bearer ${userId}`,
+             "Content-Type": "application/json",
+           },
+           body: JSON.stringify({ event_id: eventId })
+         }).then(res => {
+           if (!res.ok) throw new Error(`Failed to add event ${eventId}`);
+           return res.json();
+         })
+       );
+
+       await Promise.all(addPromises);
+       alert("Successfully added all events to Google Calendar!");
+     } catch (error) {
+       console.error("Error adding events to Google Calendar:", error);
+       alert("Failed to add some events to Google Calendar");
+     }
+   };
+
    if (loading) {
      return <div className="page">Loading calendar...</div>;
    }
@@ -201,6 +229,7 @@ const ScheduleReview = () => {
              </div>
            ))}
          </div>
+         <button onClick={handleAddToGoogleCalendar}>Add All Events to Google Calendar</button>
        </div>
      </div>
    );

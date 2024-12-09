@@ -16,6 +16,7 @@ from bson import ObjectId
 from datetime import datetime, timezone, timedelta 
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from bs4 import BeautifulSoup
 
 # Load variables from .env file
 load_dotenv()
@@ -248,7 +249,9 @@ async def login_google():
         "openid",
         "profile", 
         "email",
-        "https://www.googleapis.com/auth/calendar.readonly"  # Add this scope
+        "https://www.googleapis.com/auth/calendar"
+
+
     ]
     scope_string = "%20".join(scopes)
     
@@ -342,3 +345,66 @@ async def store_filtered_google_events(request: Request):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to store filtered events: {str(e)}")
+
+@router.post("/addToGoogleCalendar")
+async def add_to_google_calendar(request: Request):
+    # Extract the Authorization token and event ID
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get event ID from request body
+    body = await request.json()
+    event_id = body.get("event_id")
+    if not event_id:
+        raise HTTPException(status_code=400, detail="Event ID is required")
+
+    # Get user info to verify token
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Get event details from MongoDB
+        event = await events_collection.find_one({"engage_id": int(event_id)})
+        if not event:
+            raise HTTPException(status_code=404, detail="Event not found")
+
+        # Create Google Calendar credentials
+        creds = Credentials(
+            token=user_info['access_token']
+        )
+
+        # Build Google Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+
+        # Format event for Google Calendar
+        google_event = {
+            'summary': event['name'],
+            'description': BeautifulSoup(event['description'], 'html.parser').get_text(),
+            'start': {
+                'dateTime': event['startTime'].isoformat(),
+                'timeZone': 'America/New_York',
+            },
+            'end': {
+                'dateTime': event['endTime'].isoformat(),
+                'timeZone': 'America/New_York',
+            },
+            'location': event['venue']
+        }
+
+        # Insert event to Google Calendar
+        created_event = service.events().insert(
+            calendarId='primary',
+            body=google_event
+        ).execute()
+
+        return {
+            "message": "Event added to Google Calendar successfully",
+            "google_event_id": created_event['id']
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to add event to Google Calendar: {str(e)}")
+

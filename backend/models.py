@@ -45,7 +45,7 @@ class UserLogin(BaseModel):
         example={
             "access_token": "ya29.a0AfH6SMBx...",
             "refresh_token": "1//0eXy...",
-            "scope": "https://www.googleapis.com/auth/calendar.readonly",
+            "scope": "https://www.googleapis.com/auth/calendar",
             "token_type": "Bearer",
             "expiry_date": 1617211232170
         }
