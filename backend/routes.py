@@ -408,3 +408,41 @@ async def add_to_google_calendar(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to add event to Google Calendar: {str(e)}")
 
+@router.delete("/deleteGoogleEvent/{event_id}")
+async def delete_google_event(event_id: str, request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info to access their access_token
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Create Google Calendar credentials
+        creds = Credentials(
+            token=user_info['access_token']
+        )
+
+        # Build Google Calendar service
+        service = build('calendar', 'v3', credentials=creds)
+
+        # Delete the event from Google Calendar
+        service.events().delete(
+            calendarId='primary',
+            eventId=event_id
+        ).execute()
+
+        # Remove the event from user's google_events array
+        users_collection.update_one(
+            {"google_id": token},
+            {"$pull": {"google_events": {"event_id": event_id}}}
+        )
+
+        return {"message": "Event deleted successfully"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to delete event from Google Calendar: {str(e)}")
