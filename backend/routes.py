@@ -446,3 +446,31 @@ async def delete_google_event(event_id: str, request: Request):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete event from Google Calendar: {str(e)}")
+
+@router.delete("/deleteEngageEvent/{event_id}")
+async def delete_engage_event(event_id: str, request: Request):
+    # Extract the Authorization token
+    token = request.headers.get("Authorization")
+    if token is None or not token.startswith("Bearer "):
+        raise HTTPException(status_code=400, detail="Token missing or malformed")
+    token = token[7:]  # Remove "Bearer " prefix
+
+    # Get user info
+    user_info = await users_collection.find_one({"google_id": token})
+    if not user_info:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    try:
+        # Add 'await' here for the async operation
+        result = await users_collection.update_one(
+            {"google_id": token},
+            {"$pull": {"engage_events": event_id}}
+        )
+
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="Event not found in user's engage events")
+
+        return {"message": "Event removed successfully from engage events"}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to remove event: {str(e)}")
