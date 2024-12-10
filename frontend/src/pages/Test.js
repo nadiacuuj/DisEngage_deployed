@@ -12,7 +12,7 @@ const TestPage = () => {
   const [calendarEvents, setCalendarEvents] = useState([]);
 
   async function getUserInfo(){
-    const response = await fetch("http://127.0.0.1:8000/api/getUserInfo", {
+    const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/getUserInfo", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${userId}`
@@ -25,7 +25,7 @@ const TestPage = () => {
 
 
   async function delteUserInfo(){
-    const response = await fetch("http://127.0.0.1:8000/api/clearEngageEvents", {
+    const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/clearEngageEvents", {
         method: "POST",
         body: JSON.stringify(userId)
     })
@@ -42,7 +42,7 @@ const TestPage = () => {
       event_ids:test_ids,
     };
 
-    const response = await fetch("http://127.0.0.1:8000/api/updateEngageEvents", {
+    const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/updateEngageEvents", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -62,7 +62,7 @@ const TestPage = () => {
 
   async function fetchGoogleCalendarEvents() {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/getGoogleCalendar", {
+      const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/getGoogleCalendar", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${userId}`,
@@ -81,7 +81,7 @@ const TestPage = () => {
 
   async function fetchOneEvent(){
     try{
-      const response = await fetch("http://127.0.0.1:8000/api/oneEvent",{
+      const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/oneEvent",{
         method: "GET",
         headers: {
           EventId: "673f8724c883bd119684bbb0"

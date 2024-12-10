@@ -9,14 +9,14 @@ import axios from 'axios';
 const CategoryPage = () => {
   const [categories, setCategories] = useState([]); // State to hold categories
   const [events, setEvents] = useState([]);
-  const uri = process.env.REACT_APP_API_BASE_URL + '/api'
+  const uri = process.env.REACT_APP_API_BASE_URL
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         // Make GET request to fetch events from backend
         const eventsUri = uri + '/events'
-        const response = await axios.get(`http://127.0.0.1:8000/api/events`);
+        const response = await axios.get('https://disengage-backend-270035954698.us-central1.run.app/api/events');
         
         // Extract unique categories from events
         const events = response.data; // Access the array of event objects

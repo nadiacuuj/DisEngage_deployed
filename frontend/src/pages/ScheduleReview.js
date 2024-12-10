@@ -29,7 +29,7 @@ const ScheduleReview = () => {
          setEngageEvents(fetchedEngageEvents);
 
          // Fetch all Google Calendar events for display
-         const calendarResponse = await fetch("http://127.0.0.1:8000/api/getGoogleCalendar", {
+         const calendarResponse = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/getGoogleCalendar", {
            method: "GET",
            headers: {
              Authorization: `Bearer ${userId}`,
@@ -60,7 +60,7 @@ const ScheduleReview = () => {
          });
 
          // Store filtered events in the database
-         const storeResponse = await fetch("http://127.0.0.1:8000/api/storeFilteredGoogleEvents", {
+         const storeResponse = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/storeFilteredGoogleEvents", {
            method: "POST",
            headers: {
              "Authorization": `Bearer ${userId}`,
@@ -152,7 +152,7 @@ const ScheduleReview = () => {
        
        // Add each engage event to Google Calendar
        const addPromises = userData.engage_events.map(eventId => 
-         fetch("http://127.0.0.1:8000/api/addToGoogleCalendar", {
+         fetch("https://disengage-backend-270035954698.us-central1.run.app/api/addToGoogleCalendar", {
            method: "POST",
            headers: {
              "Authorization": `Bearer ${userId}`,

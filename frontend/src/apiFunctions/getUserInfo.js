@@ -1,6 +1,6 @@
 async function getUserInfo(){
     const userId = localStorage.getItem("token");
-    const response = await fetch("http://127.0.0.1:8000/api/getUserInfo", {
+    const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/getUserInfo", {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${userId}`

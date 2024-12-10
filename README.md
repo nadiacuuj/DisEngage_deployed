@@ -57,7 +57,6 @@ Create a .env file in the root directory with the following variables:
 # backend variables
 MONGODB_URI=mongodb+srv://<username>:<password>@projects-in-programming.qctmw.mongodb.net/?retryWrites=true&w=majority&appName=Projects-In-Programming
 MONGODB_DB_NAME=ProjectDB
-REACT_APP_API_BASE_URL=http://localhost:8000
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI=http://localhost:3000/callback
@@ -65,6 +64,7 @@ GOOGLE_REDIRECT_URI=http://localhost:3000/callback
 # frontend variables
 REACT_APP_GOOGLE_CLIENT_ID=
 REACT_APP_REDIRECT_URI=http://localhost:3000/callback
+REACT_APP_API_BASE_URL=https://disengage-backend-270035954698.us-central1.run.app/api
 ```
 
 ### Obtaining Google Client ID and Google Client Secret

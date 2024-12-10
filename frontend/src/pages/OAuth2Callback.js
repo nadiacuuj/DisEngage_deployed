@@ -23,7 +23,7 @@ function OAuth2Callback() {
   
       setRequestInProgress(true);
 
-      fetch('http://localhost:8000/api/auth/google', {
+      fetch('https://disengage-backend-270035954698.us-central1.run.app/api/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

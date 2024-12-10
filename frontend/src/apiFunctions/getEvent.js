@@ -1,7 +1,7 @@
 async function getEvent(event_id) {
     try {
       const userId = localStorage.getItem("token");
-      const response = await fetch("http://127.0.0.1:8000/api/oneEvent", {
+      const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/oneEvent", {
         method: "GET",
         headers: {
           "EventId": event_id,

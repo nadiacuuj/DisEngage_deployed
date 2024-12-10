@@ -14,7 +14,7 @@ function OAuth2Callback() {
       const requestBody = { code: code };
       console.log('Request body being sent:', requestBody);
 
-      fetch('http://localhost:8000/auth/google', {
+      fetch('https://disengage-backend-270035954698.us-central1.run.app/api/auth/google', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

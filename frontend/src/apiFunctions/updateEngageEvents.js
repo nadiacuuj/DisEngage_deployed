@@ -12,7 +12,7 @@ async function updateUser(event_id){
       event_ids:test_ids,
     };
 
-    const response = await fetch("http://127.0.0.1:8000/api/updateEngageEvents", {
+    const response = await fetch("https://disengage-backend-270035954698.us-central1.run.app/api/updateEngageEvents", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
