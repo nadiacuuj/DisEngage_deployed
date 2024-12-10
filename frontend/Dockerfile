@@ -22,11 +22,13 @@ FROM nginx:alpine
 # Copy built files from builder
 COPY --from=builder /app/build /usr/share/nginx/html
 
-# Expose port 3000
-EXPOSE 3000
+# Expose a placeholder port
+EXPOSE 8080
 
-ENV HOSTNAME "0.0.0.0"
-# Create nginx.conf that reads PORT environment variable from cloud run - google assigns random ports, so we need this
+# Default environment variable for PORT (in case it's not set by Cloud Run)
+ENV PORT 8080
+
+# Create nginx.conf that reads PORT environment variable from Cloud Run
 RUN printf 'server {\n\
     listen $PORT;\n\
     location / {\n\
@@ -36,5 +38,5 @@ RUN printf 'server {\n\
     }\n\
 }\n' > /etc/nginx/conf.d/default.conf.template
 
-# Use shell to substitute PORT value in nginx.conf
-CMD ["nginx", "-g", "daemon off;"]
+# Replace $PORT in nginx.conf.template with actual $PORT and start nginx
+CMD sh -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
