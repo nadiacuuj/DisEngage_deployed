@@ -26,7 +26,8 @@ COPY --from=builder /app/build /usr/share/nginx/html
 EXPOSE 8080
 
 # Default environment variable for PORT (in case it's not set by Cloud Run)
-ENV PORT 8080
+# ENV PORT 8080
+
 
 # Create nginx.conf that reads PORT environment variable from Cloud Run
 RUN printf 'server {\n\
