@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom'; // useNavigate replaces useHisto
 
 const Login = () => {
   const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-  const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
+  // const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
+  const REDIRECT_URI = 'https://disengage-270035954698.us-central1.run.app/callback';
   let isRequestInProgress = false;
 
   const handleGoogleLogin = (e) => {
