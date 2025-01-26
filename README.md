@@ -4,9 +4,9 @@ DisEngage is a full-stack web application designed to streamline event explorati
 
 NYU-affiliated users gain additional functionality by logging in with their NYU email, such as the ability to add events to a shopping cart, integrate them with their existing calendar, and detect scheduling conflicts. Upon checking out, selected events are automatically imported into their Google Calendar, ensuring seamless scheduling. 
 
-Recent updates include an organizer rating and review system, with future plans for a chat feature to foster event-related discussions.
-
 [Click here to visit the site](https://disengage-270035954698.us-central1.run.app/)
+
+Recent updates include an organizer rating and review system, with future plans for a chat feature to foster event-related discussions.
 
 
 ## Features
