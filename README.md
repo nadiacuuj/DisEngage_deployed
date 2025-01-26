@@ -11,6 +11,32 @@ Recent updates include an organizer rating and review system, with future plans 
 
 ## Features
 
+![image](https://github.com/user-attachments/assets/ca2e4225-f995-41ab-a98a-fa54685569a5)
+
+![image](https://github.com/user-attachments/assets/6ee7ee09-23fa-47d6-9a32-7d0d7136296f)
+
+![image](https://github.com/user-attachments/assets/983c0554-8977-41c1-ac0f-087554494f17)
+
+![image](https://github.com/user-attachments/assets/4b4ad391-96e7-4200-b806-e0eb389fa815)
+
+![image](https://github.com/user-attachments/assets/b0233ef7-e2b3-4325-9881-61756c2c5bad)
+
+![image](https://github.com/user-attachments/assets/6f42b8a7-f3f4-40c4-83ff-53366bfce205)
+
+![image](https://github.com/user-attachments/assets/cd8dd298-5496-4ee6-82e2-4b609c04fdda)
+
+![image](https://github.com/user-attachments/assets/f5378255-c3ef-480a-b640-1b7fb31f5aaf)
+
+![image](https://github.com/user-attachments/assets/7c9c0fdb-6453-4ebc-918d-135dc02690d2)
+
+
+
+
+
+
+
+
+
 ### Current Functionality
 
 - **User Authentication**: Supports Google OAuth for login.
