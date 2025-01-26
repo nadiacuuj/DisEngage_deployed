@@ -14,6 +14,8 @@ Recent updates include an organizer rating and review system, with future plans 
 
 ![image](https://github.com/user-attachments/assets/c0c2ec45-c20f-4dad-8a00-e5177f0efcf1)
 
+![image](https://github.com/user-attachments/assets/29e6b59f-c52e-49b4-90fb-d45713b8dd32)
+
 ![image](https://github.com/user-attachments/assets/ca2e4225-f995-41ab-a98a-fa54685569a5)
 
 ![image](https://github.com/user-attachments/assets/6ee7ee09-23fa-47d6-9a32-7d0d7136296f)
