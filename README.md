@@ -9,7 +9,7 @@ NYU-affiliated users gain additional functionality by logging in with their NYU 
 Recent updates include an organizer rating and review system, with future plans for a chat feature to foster event-related discussions.
 
 
-## Features
+## How DisEngage works
 
 
 ![image](https://github.com/user-attachments/assets/c0c2ec45-c20f-4dad-8a00-e5177f0efcf1)
