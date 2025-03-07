@@ -17,7 +17,7 @@ Recent updates include an organizer rating and review system, with future plans 
 Optional login to Google Calender for additional scheduling features:
 ![image](https://github.com/user-attachments/assets/29e6b59f-c52e-49b4-90fb-d45713b8dd32)
 
-Browse through listing of NYU events (regularly scraped from the official (NYU Engage)[https://engage.nyu.edu/] website
+Browse through listing of NYU events (regularly scraped from the official [NYU Engage](https://engage.nyu.edu/) website
 ![image](https://github.com/user-attachments/assets/ca2e4225-f995-41ab-a98a-fa54685569a5)
 
 Shopping cart style registration for events
