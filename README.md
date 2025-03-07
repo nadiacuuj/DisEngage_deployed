@@ -14,22 +14,29 @@ Recent updates include an organizer rating and review system, with future plans 
 
 ![image](https://github.com/user-attachments/assets/c0c2ec45-c20f-4dad-8a00-e5177f0efcf1)
 
+Optional login to Google Calender for additional scheduling features:
 ![image](https://github.com/user-attachments/assets/29e6b59f-c52e-49b4-90fb-d45713b8dd32)
 
+Browse through listing of NYU events (regularly scraped from the official (NYU Engage)[https://engage.nyu.edu/] website
 ![image](https://github.com/user-attachments/assets/ca2e4225-f995-41ab-a98a-fa54685569a5)
 
+Shopping cart style registration for events
 ![image](https://github.com/user-attachments/assets/6ee7ee09-23fa-47d6-9a32-7d0d7136296f)
 
+Scheduling clash detection
 ![image](https://github.com/user-attachments/assets/4b4ad391-96e7-4200-b806-e0eb389fa815)
 
 ![image](https://github.com/user-attachments/assets/b0233ef7-e2b3-4325-9881-61756c2c5bad)
 
+Import desired event(s) to your actual Google Calender
 ![image](https://github.com/user-attachments/assets/3228202d-8a67-4b49-bc90-9d19404500fa)
 
 ![image](https://github.com/user-attachments/assets/3667d3b8-bfdb-4073-8385-65ee83441925)
 
+Browse different event hosts
 ![image](https://github.com/user-attachments/assets/f5378255-c3ef-480a-b640-1b7fb31f5aaf)
 
+View and give ratings/feedback for event hosts
 ![image](https://github.com/user-attachments/assets/7c9c0fdb-6453-4ebc-918d-135dc02690d2)
 
 
